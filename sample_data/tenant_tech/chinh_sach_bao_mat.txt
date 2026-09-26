@@ -1,0 +1,5 @@
+QUY ĐỊNH BẢO MẬT VÀ SỬ DỤNG DỮ LIỆU
+
+Tuyệt đối không đưa mã nguồn nội bộ hoặc dữ liệu khách hàng lên các công cụ AI công cộng nếu chưa được cấp phép.
+Mọi mật khẩu và API Key phải được lưu trữ trong HashiCorp Vault, cấm hardcode trong mã nguồn.
+Vi phạm quy định bảo mật có thể bị chấm dứt hợp đồng lao động ngay lập tức.
