@@ -1,111 +1,74 @@
-# Task 0.4: Thiết Kế Mô Hình Dữ Liệu (Data Modeling) & Tạo Schema Ban Đầu
+# Task 0.4: Thiết Kế Mô Hình Dữ Liệu (Data Modeling) Cho Hệ Thống Multi-Tenant RAG
 
-- **Giai đoạn:** Giai đoạn 0 — Khởi tạo nền tảng
-- **Thời lượng ước tính:** 2 – 3 ngày (4 – 6 giờ làm việc)
-- **Mục tiêu:** U thiết kế sơ đồ thực thể liên kết (ERD) cho bài toán Multi-tenant RAG và viết script SQL hoàn chỉnh để khởi tạo bảng dữ liệu cùng các ràng buộc tính toàn vẹn dữ liệu (Data Integrity).
-
----
-
-## 🎯 Tiêu Chí Hoàn Thành (Definition of Done - DoD)
-1. Có file sơ đồ thiết kế ERD dạng ảnh lưu tại `docs/architecture/erd.png` (hoặc file markdown có diagram Mermaid).
-2. File script `infra/sql/init.sql` được viết hoàn chỉnh, bao gồm 2 bảng nghiệp vụ chính: `documents` và `document_chunks`.
-3. Bảng `documents` có cột `file_hash` (dùng để kiểm tra tính Idempotent) và cơ chế đánh dấu version.
-4. Bảng `document_chunks` có trường `embedding` lưu vector 384 chiều (`vector(384)`) và liên kết khóa ngoại (Foreign Key) chặt chẽ với bảng `documents`.
-5. Tạo thành công các Index: Index trên `tenant_id`, Index tìm kiếm vector (HNSW hoặc IVFFlat).
+- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
+- **Mục tiêu:** Hiểu tư duy thiết kế cơ sở dữ liệu quan hệ kết hợp lưu trữ vector cho một bài toán đa doanh nghiệp (Multi-tenant), xây dựng sơ đồ ERD và chuẩn bị kịch bản SQL khởi tạo cấu trúc bảng.
 
 ---
 
-## 🟢 MỨC 1: TỰ KHÁM PHÁ (U làm phần này trước)
+## 🎯 Mục Tiêu Cần Đạt (Definition of Done)
 
-### 1. Từ Khóa Tìm Kiếm (Search Keywords)
-- `rag database schema postgres best practices`
-- `pgvector create table with vector type and ivfflat index`
-- `multi tenant data modeling foreign key cascade`
-- `sha256 file hash deduplication sql schema`
-
-### 2. Câu Hỏi Định Hướng Tư Duy
-- *Tại sao một tài liệu dài không nên lưu toàn bộ vào 1 dòng vector mà phải chia thành nhiều chunks (đoạn nhỏ)?*
-- *Nếu một tài liệu bị xóa ở bảng `documents`, các chunks tương ứng trong bảng `document_chunks` có nên bị xóa theo không? Dùng cú pháp SQL nào để làm việc này (`ON DELETE ...`)?*
-- *Cột `tenant_id` có bắt buộc phải xuất hiện ở cả bảng `documents` lẫn bảng `document_chunks` không? Tại sao (nghĩ về tốc độ truy vấn lọc theo tenant)?*
-- *Vector 384 chiều là gì? Tại sao lại là con số 384 mà không phải 1536 hay 768?*
+Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
+1. Bạn vẽ được sơ đồ thực thể liên kết (ERD) mô tả mối quan hệ giữa 2 bảng chính: `documents` (Tài liệu gốc) và `document_chunks` (Các đoạn văn bản đã cắt để tìm kiếm).
+2. Thiết kế bảng đảm bảo được tính **cách ly theo doanh nghiệp (Multi-tenancy)**: bất kỳ bảng nào chứa dữ liệu nghiệp vụ cũng phải có định danh `tenant_id`.
+3. Có cơ chế nhận diện trùng lặp/sửa đổi file dựa trên mã băm nội dung (Hash-based Idempotency) và quản lý phiên bản (Versioning) trong bảng `documents`.
+4. Bảng `document_chunks` có trường lưu vector đặc trưng (độ dài vector phù hợp với mô hình embedding sẽ dùng, ví dụ: 384 chiều) và ràng buộc khóa ngoại (Foreign Key) chặt chẽ với bảng `documents`.
+5. Tạo thành công các bảng trên cơ sở dữ liệu PostgreSQL thực tế thông qua kịch bản SQL.
 
 ---
 
-## 🟡 MỨC 2: HƯỚNG DẪN CHI TIẾT & PHAO CỨU SINH (Chỉ mở khi bị tắc)
+## 🟢 MỨC 1: ĐỊNH HƯỚNG TỰ TÌM HIỂU
+
+### 1. Khái Niệm Cốt Lõi
+- **Kiến trúc Multi-tenancy ở tầng dữ liệu:** Làm thế nào để đảm bảo dữ liệu của công ty A không bao giờ bị lẫn sang công ty B? Việc đánh chỉ mục (Index) trên cột `tenant_id` mang lại lợi ích gì cho hiệu năng tìm kiếm?
+- **Tính Bất Biến (Data Idempotency) & Hashing:** Trong kỹ nghệ dữ liệu, nếu một pipeline bị chạy lại nhiều lần cho cùng một file tài liệu, làm thế nào để hệ thống không sinh ra dữ liệu trùng lặp? Mã băm SHA-256 của nội dung file được áp dụng ra sao trong trường hợp này?
+- **Phân rã tài liệu (Document Splitting / Chunking):** Tại sao trong các ứng dụng AI/RAG, người ta không nhúng nguyên cả một cuốn tài liệu 50 trang thành 1 vector, mà phải chia nhỏ thành các đoạn (chunks)? Mối quan hệ giữa Document và Document Chunk là gì (1-1, 1-N hay N-N)?
+- **Chỉ mục Vector (Vector Indexing):** Tìm hiểu khái quát về chỉ mục HNSW (Hierarchical Navigable Small World) hoặc IVFFlat trong `pgvector`. Tại sao khi dữ liệu vector lớn, việc quét toàn bộ bảng (Sequential Scan) lại rất chậm?
+
+### 2. Từ Khóa Tra Cứu (Search Keywords)
+- `rag database schema design postgresql best practices`
+- `multi tenant data architecture shared database shared schema`
+- `pgvector vector column definition and hnsw index`
+- `idempotent data pipeline file hash sha256 sql`
+- `database relationship on delete cascade explanation`
+
+### 3. Câu Hỏi Tư Duy Để Bạn Tự Kiểm Tra Bản Thân
+- *Nếu một tài liệu bị xóa khỏi hệ thống, các đoạn văn bản (chunks) thuộc về tài liệu đó nên được xử lý thế nào? Thuộc tính nào trong SQL (`ON DELETE ...`) giúp tự động giải quyết việc này?*
+- *Nếu nhân viên của công ty A sửa một câu trong tài liệu quy chế và tải lên lại, hệ thống nên ghi đè hoàn toàn hay nên tăng số phiên bản (version = version + 1)? Ưu và nhược điểm của mỗi cách là gì?*
+- *Vector embedding bản chất là gì? Tại sao kích thước vector lại cố định (ví dụ 384 hoặc 768 hoặc 1536 chiều) đối với một mô hình nhất định?*
+
+---
+
+## 🟡 MỨC 2: GỢI Ý LUỒNG XỬ LÝ & LƯU Ý KHI GẶP LỖI
+
+*(Nếu bạn đã tự tìm hiểu từ 1–2 tiếng mà vẫn vướng mắc, hãy tham khảo các gợi ý dưới đây)*
 
 <details>
-<summary>👉 <b>Bấm vào đây để xem hướng dẫn chi tiết từng bước</b></summary>
+<summary>👉 <b>Bấm vào đây để xem gợi ý luồng thực hiện</b></summary>
 
-### Bước 1: Tư duy thiết kế thực thể
-- **Thực thể 1: `documents` (Tài liệu gốc)**
-  - Quản lý metadata của từng file được tải lên MinIO.
-  - Mỗi file của 1 tenant được xác định qua `tenant_id` và `file_path`.
-  - Cột `file_hash` (mã băm SHA-256) giúp nhận diện: nếu nội dung file không đổi -> không cần chạy lại pipeline tốn tài nguyên.
-  - Cột `version` (INT) tăng dần nếu cùng 1 file được sửa đổi nội dung.
+### 1. Luồng Tư Duy Thiết Kế Thực Thể
+- **Bảng `documents` (Quản lý tài liệu gốc):**
+  - Cần các trường để xác định: Tài liệu này của ai (`tenant_id`), tên file là gì (`file_name`), vị trí lưu trên MinIO (`file_path`).
+  - Cần trường `file_hash`: Lưu mã băm (SHA-256) của nội dung file. Khi quét file mới, pipeline chỉ cần so sánh chuỗi hash này với database để biết file có thay đổi hay không.
+  - Cần trường `version` (INT): Mặc định là 1. Nếu hash thay đổi nhưng đường dẫn file giữ nguyên, ta có thể lưu một bản ghi mới với version tăng lên.
+  - Cần trường `is_active` (BOOLEAN): Để đánh dấu phiên bản nào đang có hiệu lực phục vụ tìm kiếm.
+- **Bảng `document_chunks` (Quản lý các đoạn cắt):**
+  - Cần trường `document_id`: Khóa ngoại trỏ về `documents(id)`. Nên gắn kèm `ON DELETE CASCADE` để khi xóa tài liệu gốc, database tự động dọn dẹp các chunk liên quan mà không để lại dữ liệu rác.
+  - Cần trường `tenant_id`: Mặc dù đã có `document_id`, việc lưu thêm `tenant_id` tại bảng chunk giúp câu lệnh tìm kiếm ngữ nghĩa có thể lọc trực tiếp `WHERE tenant_id = '...'` mà không bắt buộc phải JOIN sang bảng document, tăng tốc độ truy vấn đáng kể.
+  - Cần trường `chunk_index`: Vị trí của đoạn trong văn bản (đoạn 0, đoạn 1, đoạn 2,...).
+  - Cần trường `content` (TEXT): Chứa nội dung chữ thực tế của đoạn đó để trả về cho người dùng đọc.
+  - Cần trường `embedding` (`vector(384)`): Lưu vector đặc trưng (độ dài 384 tương ứng với mô hình phổ biến và nhẹ nhất là `all-MiniLM-L6-v2`).
+  - Cần trường `metadata` (`JSONB`): Giúp lưu trữ linh hoạt các thông tin phụ trợ (số trang, tên chương mục, ngày tạo,...).
 
-- **Thực thể 2: `document_chunks` (Các đoạn văn bản đã cắt)**
-  - Một tài liệu (`documents`) sinh ra nhiều đoạn nhỏ (`chunks`).
-  - Mỗi đoạn lưu nội dung thô (`content`), vị trí đoạn trong file (`chunk_index`).
-  - Cột `embedding` lưu biểu diễn số học của đoạn văn bản (độ dài 384 phù hợp với model local siêu nhẹ `all-MiniLM-L6-v2`).
-  - Cột `metadata` dạng `JSONB` để lưu linh hoạt các thông tin phụ (tiêu đề mục, số trang, ngày tạo...).
+### 2. Thiết Kế Chỉ Mục (Indexes)
+- Bảng nào cũng nên đánh Index trên `tenant_id` vì hầu hết các câu truy vấn nghiệp vụ đều lọc theo công ty.
+- Với cột `embedding`, sau khi kích hoạt extension `vector`, bạn có thể tìm hiểu cú pháp tạo Index loại `hnsw` với toán tử khoảng cách `vector_cosine_ops` (Cosine Distance) để tối ưu tốc độ tìm kiếm tương đồng.
 
-### Bước 2: Cập nhật nội dung file `infra/sql/init.sql`
-Mở file `infra/sql/init.sql` và điền nội dung sau:
+*(Bạn có thể tham khảo file mẫu gợi ý tại [`infra/sql/init.sql`](../../infra/sql/init.sql) trong thư mục dự án để đối chiếu với thiết kế của mình).*
 
-```sql
--- 1. Kích hoạt tiện ích mở rộng pgvector
-CREATE EXTENSION IF NOT EXISTS vector;
-
--- 2. Bảng quản lý Tài liệu gốc (Documents)
-CREATE TABLE IF NOT EXISTS documents (
-    id SERIAL PRIMARY KEY,
-    tenant_id VARCHAR(50) NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    file_path VARCHAR(500) NOT NULL,
-    file_hash VARCHAR(64) NOT NULL,          -- SHA-256 hash của nội dung file
-    version INT NOT NULL DEFAULT 1,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE, -- Đánh dấu bản mới nhất đang sử dụng
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_tenant_file_version UNIQUE (tenant_id, file_path, version)
-);
-
--- Index phục vụ lọc tài liệu theo Tenant
-CREATE INDEX IF NOT EXISTS idx_documents_tenant ON documents(tenant_id);
-CREATE INDEX IF NOT EXISTS idx_documents_hash ON documents(file_hash);
-
--- 3. Bảng quản lý Các đoạn cắt (Document Chunks)
-CREATE TABLE IF NOT EXISTS document_chunks (
-    id SERIAL PRIMARY KEY,
-    document_id INT NOT NULL,
-    tenant_id VARCHAR(50) NOT NULL,          -- Lưu tenant_id ở đây để tăng tốc filter
-    chunk_index INT NOT NULL,                -- Thứ tự đoạn trong file (0, 1, 2, ...)
-    content TEXT NOT NULL,                   -- Nội dung văn bản của đoạn
-    embedding vector(384),                   -- Vector đặc trưng 384 chiều
-    metadata JSONB DEFAULT '{}'::jsonb,      -- Metadata phụ trợ (page, section, ...)
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_document
-        FOREIGN KEY (document_id)
-        REFERENCES documents(id)
-        ON DELETE CASCADE                    -- Xóa document thì tự động dọn sạch chunks
-);
-
--- Index tăng tốc truy vấn lọc
-CREATE INDEX IF NOT EXISTS idx_chunks_tenant ON document_chunks(tenant_id);
-CREATE INDEX IF NOT EXISTS idx_chunks_doc_id ON document_chunks(document_id);
-
--- Index tìm kiếm tương đồng vector (Cosine Distance) sử dụng HNSW
-CREATE INDEX IF NOT EXISTS idx_chunks_embedding_hnsw 
-ON document_chunks 
-USING hnsw (embedding vector_cosine_ops);
-```
-
-### Bước 3: Thực thi Schema trên Database
-U có 2 cách để nạp schema này vào Postgres:
-- **Cách 1 (Tái tạo lại DB):** Chạy `docker compose -f infra/docker-compose.yml down -v` rồi `docker compose -f infra/docker-compose.yml up -d` (Lưu ý: cờ `-v` sẽ xóa sạch data cũ để Docker chạy lại file `init.sql`).
-- **Cách 2 (Chạy trực tiếp trên DBeaver):** Mở DBeaver, mở file `infra/sql/init.sql` và nhấn tổ hợp phím `Alt + X` để thực thi toàn bộ script.
-
-### Bước 4: Kiểm tra kết quả
-Trong DBeaver, kiểm tra xem hai bảng `documents` và `document_chunks` đã hiển thị trong Schema `public` chưa. Thử insert 1 dòng test để kiểm tra ràng buộc khóa ngoại.
+### 3. Những Vấn Đề Thường Gặp
+- **Lỗi kiểu dữ liệu `vector` không tồn tại (`type "vector" does not exist`):**
+  - Nguyên nhân: Bạn chưa chạy lệnh `CREATE EXTENSION IF NOT EXISTS vector;` trước khi tạo bảng.
+- **Tạo Index HNSW bị báo lỗi hoặc tốn nhiều thời gian:**
+  - HNSW là giải pháp tìm kiếm láng giềng gần đúng rất nhanh. Nếu chưa quen với HNSW, ở giai đoạn đầu bạn hoàn toàn có thể chạy query trực tiếp mà chưa cần tạo vector index, sau đó bổ sung index khi số lượng bản ghi lớn hơn.
 
 </details>

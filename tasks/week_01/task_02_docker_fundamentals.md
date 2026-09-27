@@ -1,95 +1,72 @@
-# Task 0.2: Cài Đặt Docker Desktop & Cấu Hình Tối Ưu RAM Trên Windows 11
+# Task 0.2: Làm Quen Với Docker & Thiết Lập Cấu Hình Tối Ưu RAM Trên Windows 11
 
-- **Giai đoạn:** Giai đoạn 0 — Khởi tạo nền tảng
-- **Thời lượng ước tính:** 2 – 3 ngày (4 – 6 giờ làm việc)
-- **Mục tiêu:** U cài đặt được Docker Desktop liên kết với WSL2, cấu hình giới hạn RAM an toàn cho hệ thống (16GB RAM) để tránh treo máy, và làm chủ các lệnh Docker CLI cơ bản.
-
----
-
-## 🎯 Tiêu Chí Hoàn Thành (Definition of Done - DoD)
-1. Trong terminal Ubuntu (WSL2), U chạy được lệnh `docker ps` mà không cần dùng quyền `sudo` và không bị báo lỗi kết nối Docker daemon.
-2. File cấu hình `.wslconfig` được tạo chuẩn trong thư mục Windows User, giới hạn RAM tối đa cho WSL2 không vượt quá 10GB.
-3. Chạy thành công container thử nghiệm `docker run --rm hello-world` từ terminal WSL và hiểu được đầu ra hiển thị.
+- **Giai đoạn:** Tuần 1 — Nền móng môi trường
+- **Mục tiêu:** Hiểu bản chất của công nghệ đóng gói (Containerization), cài đặt Docker Desktop tích hợp với WSL2 và cấu hình giới hạn tài nguyên hợp lý để máy tính 16GB RAM hoạt động mượt mà.
 
 ---
 
-## 🟢 MỨC 1: TỰ KHÁM PHÁ (U làm phần này trước)
+## 🎯 Mục Tiêu Cần Đạt (Definition of Done)
 
-### 1. Từ Khóa Tìm Kiếm (Search Keywords)
-- `install docker desktop windows 11 wsl2 backend`
-- `configure .wslconfig limit memory windows 11`
-- `docker basic commands: run, ps, stop, rm, images`
-- `difference between docker image and docker container`
-
-### 2. Câu Hỏi Định Hướng Tư Duy
-- *Container khác gì với Image? Nếu so sánh với lập trình hướng đối tượng (OOP), cái nào tương đương với Class, cái nào tương đương với Object/Instance?*
-- *WSL2 trên Windows 11 mặc định có thể tự động ngốn đến 50% hoặc 80% dung lượng RAM của máy nếu không kiểm soát. Làm sao để đặt trần (limit) RAM cho nó?*
-- *Lệnh `docker run -d -p 8080:80 nginx` có ý nghĩa gì? Số 8080 là gì, số 80 là gì?*
+Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
+1. Docker Desktop đã được cài đặt và đang chạy bình thường trên Windows 11 với engine là WSL2 backend.
+2. Từ terminal của Ubuntu (WSL2), bạn thực hiện được các lệnh kiểm tra trạng thái Docker (như `docker ps`, `docker version`) mà không bị lỗi giao tiếp với Docker daemon.
+3. Chạy thử nghiệm thành công một container mẫu (như `hello-world` hoặc `nginx`) và hiểu rõ vòng đời từ lúc kéo Image đến khi Container chạy và dừng lại.
+4. Đã tạo file cấu hình `.wslconfig` trong thư mục người dùng Windows để đặt mức trần bộ nhớ RAM hợp lý (khoảng 8GB - 10GB cho WSL2), tránh hiện tượng WSL chiếm hết RAM gây treo máy.
 
 ---
 
-## 🟡 MỨC 2: HƯỚNG DẪN CHI TIẾT & PHAO CỨU SINH (Chỉ mở khi bị tắc)
+## 🟢 MỨC 1: ĐỊNH HƯỚNG TỰ TÌM HIỂU
+
+### 1. Khái Niệm Cốt Lõi
+- **Docker Image vs Container:** Phân biệt "bản vẽ/khuôn mẫu" (Image) và "ngôi nhà/thể hiện thực tế đang chạy" (Container).
+- **WSL 2 Backend trong Docker Desktop:** Cơ chế Docker Desktop chạy một Linux VM nhẹ bên trong WSL để chia sẻ daemon trực tiếp với các bản phân phối Linux như Ubuntu.
+- **Port Mapping (`-p host_port:container_port`):** Tại sao ứng dụng chạy bên trong một container bị cô lập mạng lại có thể truy cập được từ trình duyệt bên ngoài máy Windows?
+- **Tài nguyên bộ nhớ WSL2:** Cách Windows cấp phát động RAM cho máy ảo vEthernet/WSL và lý do cần đặt giới hạn thông qua `.wslconfig`.
+
+### 2. Từ Khóa Tra Cứu (Search Keywords)
+- `docker desktop install windows 11 wsl2 integration`
+- `docker get started understand images and containers`
+- `limit wsl2 memory consumption .wslconfig windows 11`
+- `docker port publishing explained`
+
+### 3. Câu Hỏi Tư Duy Để Bạn Tự Kiểm Tra Bản Thân
+- *Nếu bạn xóa một container đang chạy, những file được tạo ra bên trong container đó có còn tồn tại không?*
+- *Nếu hai container cùng muốn mở cổng 8080 ra ngoài máy Windows thì có được không? Cần giải quyết việc trùng cổng này như thế nào?*
+- *Tại sao việc chạy Docker thông qua WSL2 lại tối ưu hơn việc bật Hyper-V truyền thống trên Windows?*
+
+---
+
+## 🟡 MỨC 2: GỢI Ý LUỒNG XỬ LÝ & LƯU Ý KHI GẶP LỖI
+
+*(Nếu bạn đã tự tìm hiểu từ 1–2 tiếng mà vẫn vướng mắc, hãy tham khảo các gợi ý dưới đây)*
 
 <details>
-<summary>👉 <b>Bấm vào đây để xem hướng dẫn chi tiết từng bước</b></summary>
+<summary>👉 <b>Bấm vào đây để xem gợi ý luồng thực hiện</b></summary>
 
-### Bước 1: Giới hạn RAM cho WSL2 qua file `.wslconfig`
-*Máy của U có 16GB RAM. Nếu chạy song song Windows + Chrome + VS Code + Docker (Postgres, MinIO, Python), ta cần cố định mức RAM cho WSL2 là 10GB để máy luôn mượt.*
+### 1. Luồng Các Bước Cần Thực Hiện
+1. **Thiết lập giới hạn RAM cho WSL2 (`.wslconfig`):**
+   - Tài liệu tham khảo: [Microsoft Learn - Advanced settings configuration in WSL](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configure-global-options-with-wslconfig).
+   - Trên Windows, file `.wslconfig` nằm tại thư mục người dùng (`%USERPROFILE%\.wslconfig`, tức là `C:\Users\<Tên_Của_Bạn>\.wslconfig`).
+   - Các thuộc tính chính cần cấu hình trong phần `[wsl2]` bao gồm `memory` (khuyên đặt `8GB` hoặc `10GB` với máy 16GB RAM) và `processors`.
+   - Mỗi lần sửa file này, bạn cần chạy lệnh tắt hoàn toàn WSL (`wsl --shutdown` trên PowerShell) rồi mở lại để cấu hình có hiệu lực.
+2. **Cài đặt và thiết lập Docker Desktop:**
+   - Tải bộ cài chính thức từ trang chủ [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/).
+   - Khi cài đặt, hãy đảm bảo tùy chọn sử dụng **WSL 2 based engine** đã được tích chọn.
+   - Sau khi cài xong, mở Docker Settings -> tìm phần **WSL Integration** (thường nằm ở `Settings > Resources > WSL integration`) -> bật cho phép tích hợp với bản Ubuntu mà bạn đang dùng.
+3. **Thử nghiệm trên dòng lệnh:**
+   - Mở terminal Ubuntu trong VS Code.
+   - Thử chạy một container kiểm tra đơn giản: `docker run hello-world`.
+   - Thử tìm hiểu các cờ lệnh phổ biến khi chạy container:
+     - `-d` (chạy ngầm - detached mode)
+     - `--name` (đặt tên cho container dễ quản lý)
+     - `-p` (chuyển tiếp cổng)
+     - `--rm` (tự dọn dẹp xóa container khi nó dừng chạy)
 
-1. Mở PowerShell trên Windows (không cần quyền Admin).
-2. Tạo hoặc chỉnh sửa file `.wslconfig` tại thư mục người dùng Windows bằng lệnh sau:
-   ```powershell
-   notepad $env:USERPROFILE\.wslconfig
-   ```
-3. Khi Notepad mở ra, dán nội dung sau vào:
-   ```ini
-   [wsl2]
-   memory=10GB
-   processors=4
-   swap=2GB
-   ```
-4. Bấm `Ctrl + S` để lưu lại và tắt Notepad.
-5. Chạy lệnh tắt hẳn WSL để áp dụng cấu hình:
-   ```powershell
-   wsl --shutdown
-   ```
-
-### Bước 2: Cài đặt Docker Desktop trên Windows 11
-1. Tải bộ cài đặt chính thức từ: `https://www.docker.com/products/docker-desktop/`.
-2. Chạy file cài đặt `Docker Desktop Installer.exe`.
-3. Trong màn hình cài đặt, **bắt buộc tích chọn:**
-   - `Use WSL 2 instead of Hyper-V (recommended)`.
-4. Bấm **OK** và chờ cài đặt hoàn tất. Khởi động lại máy nếu được yêu cầu.
-
-### Bước 3: Kích hoạt WSL2 Integration trong Docker Desktop
-1. Mở ứng dụng **Docker Desktop** trên Windows.
-2. Bấm vào icon bánh răng **Settings** ở góc trên bên phải.
-3. Chọn mục **General** -> Đảm bảo đã tích chọn: `Use the WSL 2 based engine`.
-4. Chọn mục **Resources** -> **WSL integration**:
-   - Bật công tắc `Enable integration with my default WSL distro`.
-   - Bật thêm công tắc ở dòng `Ubuntu-22.04`.
-5. Bấm nút **Apply & restart** ở góc dưới cùng bên phải.
-
-### Bước 4: Kiểm tra và chạy thử container từ Terminal Ubuntu
-1. Mở VS Code (đang ở môi trường WSL Ubuntu).
-2. Mở Terminal và kiểm tra:
-   ```bash
-   docker --version
-   docker ps
-   ```
-3. Chạy thử container `hello-world`:
-   ```bash
-   docker run --rm hello-world
-   ```
-   Nếu màn hình hiển thị:
-   > `Hello from Docker! This message shows that your installation appears to be working correctly.`
-   thì xin chúc mừng, toàn bộ môi trường Docker đã sẵn sàng!
-
-### ⚠️ Bắt Lỗi Thường Gặp (Troubleshooting)
-- **Lỗi: `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`**
-  - *Nguyên nhân:* Ứng dụng Docker Desktop trên Windows chưa được bật hoặc đang khởi động dở.
-  - *Cách xử lý:* Bật Docker Desktop trên Windows lên, chờ đến khi icon cá voi ở góc dưới thanh taskbar Windows chuyển sang trạng thái màu xanh lá cây ("Engine running").
-- **Lỗi: Máy tính bị đơ, quạt hú to khi chạy Docker**
-  - *Cách xử lý:* Kiểm tra lại file `C:\Users\<TênUser>\.wslconfig` xem đã tạo đúng chưa và đã chạy `wsl --shutdown` chưa.
+### 2. Những Vấn Đề Thường Gặp
+- **Lỗi Docker daemon không chạy (`Cannot connect to the Docker daemon`):**
+  - Hãy kiểm tra xem ứng dụng Docker Desktop trên thanh Taskbar Windows đã khởi động xong chưa (biểu tượng cá voi màu xanh ổn định).
+  - Kiểm tra xem trong Settings của Docker Desktop đã bật công tắc cho bản Ubuntu tương ứng chưa.
+- **Máy bị chậm hoặc giật khi chạy nhiều ứng dụng:**
+  - Mở Task Manager trên Windows kiểm tra tiến trình `Vmmem`. Tiến trình này đại diện cho toàn bộ tài nguyên mà WSL2 và Docker đang sử dụng. Nếu `Vmmem` ăn quá nhiều RAM, hãy xem lại file `.wslconfig`.
 
 </details>

@@ -1,60 +1,56 @@
-# DocFlow — Nền Tảng Dữ Liệu Cho Trợ Lý AI Nội Bộ (Multi-Tenant RAG Data Platform)
+# DocFlow — Nền Tảng Dữ Liệu Cho Trợ Lý AI Nội Bộ
 
-Hệ thống Data Platform phục vụ trợ lý AI doanh nghiệp đa khách hàng (Multi-tenant), kết hợp hai luồng dữ liệu chính:
-1. **Luồng tài liệu (Unstructured Data Pipeline):** Ingestion, Document Cleaning, Semantic Chunking, pgvector Storage, Semantic Search.
-2. **Luồng sự kiện (Analytics & Logging Pipeline):** Event Tracking, Dimensional Modeling với dbt, Operational Dashboard.
+Dự án này là bài toán thực chiến giúp bạn tiếp cận và làm quen với công việc của một **Data Engineer (DE)** thông qua việc xây dựng nền tảng dữ liệu phục vụ trợ lý AI đa doanh nghiệp (Multi-tenant RAG Data Platform).
 
----
-
-## 🧭 Hướng Dẫn & Quy Định Cho U
-
-Chào U! Repo này là dự án thực chiến giúp U làm quen và làm chủ tư duy của một **Data Engineer**.
-
-### 1. Nguyên Tắc 2 Mức Hướng Dẫn (Level 1 & Level 2)
-Mỗi task trong thư mục `tasks/` được chia làm 2 mức độ:
-- 🟢 **MỨC 1: TỰ KHÁM PHÁ (Bắt buộc làm trước)**
-  - U đọc kỹ **Mục tiêu** và **Definition of Done (DoD)**.
-  - Sử dụng **Search Keywords** được cung cấp để tự tra cứu tài liệu, Google, hoặc đọc Official Docs.
-  - Trả lời các **Câu hỏi định hướng tư duy** trước khi bắt tay vào gõ lệnh.
-- 🟡 **MỨC 2: HƯỚNG DẪN CHI TIẾT & PHAO CỨU SINH**
-  - **Chỉ mở ra khi U đã tự tìm hiểu và bị tắc quá 1 – 2 tiếng.**
-  - Cung cấp đường dẫn file chính xác, cú pháp câu lệnh chi tiết từng bước, và các lỗi thường gặp (troubleshooting).
-
-### 2. Chu Kỳ Review & Họp Đánh Giá
-- **Review 1 tuần / 1 lần:** U tạo Pull Request (PR) hoặc cập nhật tiến độ vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
-- U cần chuẩn bị demo ngắn hoặc trả lời các câu hỏi phản biện liên quan đến các quyết định kỹ thuật của task trong tuần.
+Hệ thống xoay quanh 2 luồng dữ liệu chính:
+1. **Luồng tài liệu (Document Ingestion & Retrieval):** Tiếp nhận file, làm sạch, cắt đoạn (chunking), tạo vector embedding và tìm kiếm ngữ nghĩa theo từng doanh nghiệp.
+2. **Luồng sự kiện (Analytics & Logging):** Ghi nhận log truy vấn, mô hình hóa dữ liệu (Data Modeling với dbt) và trực quan hóa số liệu vận hành.
 
 ---
 
-## 📂 Cấu Trúc Thư Mục
+## 💡 Phương Pháp Học & Cách Dùng Tài Liệu
+
+Tài liệu trong repo này được thiết kế không phải để bạn "copy-paste lệnh có sẵn", mà để rèn luyện kỹ năng quan trọng nhất của kỹ sư phần mềm: **tự tra cứu, hiểu bản chất vấn đề và giải quyết lỗi phát sinh**.
+
+Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ hỗ trợ:
+
+### 🟢 Mức 1: Định Hướng Tự Học (Hãy luôn bắt đầu từ đây)
+- **Mục tiêu & Tiêu chuẩn hoàn thành (DoD):** Giúp bạn biết rõ kết quả cần đạt được là gì.
+- **Từ khóa tra cứu (Keywords):** Gợi ý những cụm từ chính xác để bạn tự tìm tài liệu chính thức hoặc thảo luận kỹ thuật.
+- **Câu hỏi tư duy:** Những câu hỏi giúp bạn hiểu lý do "tại sao lại làm như vậy" thay vì chỉ học vẹt.
+
+### 🟡 Mức 2: Gợi Ý Luồng Xử Lý (Mở ra khi bạn bị tắc quá lâu)
+- Khi bạn đã chủ động tìm kiếm 1–2 tiếng mà vẫn chưa rõ hướng đi, hãy mở phần này.
+- Mức này sẽ chỉ ra **luồng tư duy (workflow)**, các tài liệu tham khảo chính thống và các lưu ý đặc thù (nhất là khi chạy trên môi trường Windows 11/WSL2), chứ không áp đặt các câu lệnh cứng nhắc. Máy tính của mỗi người có thể khác nhau, việc hiểu luồng quan trọng hơn việc chạy đúng 1 lệnh copy.
+
+---
+
+## 🧭 Cơ Chế Theo Dõi Tiến Độ Hàng Tuần
+
+- **Tần suất review:** Mỗi tuần một lần, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
+- **Cách thức:**
+  1. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
+  2. Tạo Pull Request (PR) cho những nội dung đã làm trong tuần.
+  3. Trong buổi review, bạn sẽ demo nhanh kết quả hoặc giải thích cách bạn đã giải quyết bài toán theo tiêu chí của task.
+
+---
+
+## 📂 Cấu Trúc Thư Mục Dự Án
 
 ```text
-docflow/
-├── README.md                 # Giới thiệu dự án & hướng dẫn tổng quát
+docflow-data-platform/
+├── README.md                 # Giới thiệu bài toán & hướng dẫn chung
 ├── roadmap/
-│   ├── overview.md           # Lộ trình tổng thể các tuần
+│   ├── overview.md           # Lộ trình tổng thể dự án
 │   └── weekly_tracker.md     # Bảng theo dõi tiến độ review hàng tuần
-├── tasks/                    # Kế hoạch chi tiết từng tuần chia 2 mức
-│   ├── week_01/
-│   │   ├── task_01_wsl_vscode.md
-│   │   └── task_02_docker_fundamentals.md
-│   └── week_02/
-│       ├── task_03_docker_compose_infra.md
-│       ├── task_04_data_modeling.md
-│       └── task_05_mock_data.md
-├── infra/                    # Hạ tầng Docker & Database
+├── tasks/                    # Danh sách các task chi tiết theo tuần
+│   ├── week_01/              # Tuần 1: Môi trường làm việc chuẩn (WSL2, Docker)
+│   └── week_02/              # Tuần 2: Hạ tầng lưu trữ, Database & Data Modeling
+├── infra/                    # Thư mục cấu hình hạ tầng mẫu (tham khảo)
 │   ├── docker-compose.yml
-│   └── sql/
-│       └── init.sql
-├── sample_data/              # Dữ liệu tài liệu giả lập cho các Tenant
-│   ├── tenant_retail/
-│   └── tenant_tech/
-└── docs/                     # Tài liệu thiết kế ERD, Architecture, Quyết định thiết kế
-    └── architecture/
+│   └── sql/init.sql
+├── sample_data/              # Dữ liệu tài liệu giả lập phục vụ kiểm thử
+└── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
 ```
 
----
-
-## 🚀 Bắt Đầu Từ Đâu?
-
-U hãy mở ngay thư mục [`tasks/week_01/`](tasks/week_01/) và bắt đầu với [Task 0.1: Thiết lập môi trường Linux chuẩn trên Windows 11 (WSL2 + VS Code)](tasks/week_01/task_01_wsl_vscode.md)!
+Hãy bắt đầu tuần đầu tiên tại thư mục [`tasks/week_01/`](tasks/week_01/) nhé! Chúc bạn có trải nghiệm học tập thú vị.

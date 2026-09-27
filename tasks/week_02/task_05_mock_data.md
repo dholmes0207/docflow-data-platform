@@ -1,90 +1,69 @@
-# Task 0.5: Tạo Bộ Dữ Liệu Kiểm Thử Giả Lập (Mock Data & Edge Cases)
+# Task 0.5: Xây Dựng Bộ Dữ Liệu Thử Nghiệm & Các Trường Hợp Biên (Mock Data & Edge Cases)
 
-- **Giai đoạn:** Giai đoạn 0 — Khởi tạo nền tảng
-- **Thời lượng ước tính:** 1 – 2 ngày (2 – 4 giờ làm việc)
-- **Mục tiêu:** U chuẩn bị sẵn bộ tài liệu giả lập cho 2 doanh nghiệp (Tenant) với đầy đủ các tình huống dữ liệu chuẩn và các tình huống bẫy (edge cases: file rỗng, file trùng tên, file chỉnh sửa) để phục vụ việc kiểm thử pipeline tự động sau này.
-
----
-
-## 🎯 Tiêu Chí Hoàn Thành (Definition of Done - DoD)
-1. Thư mục `sample_data/` trong repo có đầy đủ các file tài liệu dạng `.txt` và `.md` được phân chia theo tenant.
-2. Có ít nhất 1 file "bẫy" rỗng (0 bytes) để kiểm tra cơ chế Data Quality validation.
-3. Có 1 cặp file minh họa việc cập nhật nội dung (phiên bản 1 và phiên bản 2) để kiểm thử cơ chế Idempotent & Versioning.
-4. Đã tải (upload) thành công dữ liệu này lên bucket `raw-documents` trên MinIO theo đúng cấu trúc thư mục phân chia theo tenant.
+- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
+- **Mục tiêu:** Hiểu tầm quan trọng của việc chuẩn bị dữ liệu kiểm thử (Test Data) trong Data Engineering; tự tay tạo bộ tài liệu giả lập cho 2 doanh nghiệp kèm các "bẫy" có chủ đích để kiểm tra độ tin cậy của pipeline xử lý sau này.
 
 ---
 
-## 🟢 MỨC 1: TỰ KHÁM PHÁ (U làm phần này trước)
+## 🎯 Mục Tiêu Cần Đạt (Definition of Done)
 
-### 1. Từ Khóa Tìm Kiếm (Search Keywords)
-- `data engineering synthetic test data edge cases`
-- `minio web console upload files and create folders`
-- `s3 key prefix naming conventions multi-tenant`
-
-### 2. Câu Hỏi Định Hướng Tư Duy
-- *Trong Object Storage (S3 / MinIO), thực tế có khái niệm "thư mục" thật sự như trên ổ cứng máy tính không, hay chỉ là tiền tố tên file (Key Prefix)?*
-- *Nếu một người dùng cố tình tải lên một file hoàn toàn rỗng, pipeline của Data Engineer nên ứng xử thế nào: báo lỗi dừng cả hệ thống hay ghi log cảnh báo và bỏ qua file đó?*
-- *Làm sao để chắc chắn nhân viên công ty A không bao giờ nhìn thấy hoặc tìm kiếm ra tài liệu của công ty B?*
+Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
+1. Bạn đã chuẩn bị được bộ dữ liệu giả lập đại diện cho ít nhất 2 doanh nghiệp thuộc hai lĩnh vực khác nhau (ví dụ: một công ty bán lẻ và một công ty công nghệ), mỗi công ty có từ 2–3 tài liệu nội bộ dạng văn bản (`.txt` hoặc `.md`).
+2. Có chủ đích tạo ra ít nhất 2 trường hợp kiểm thử đặc biệt (Edge Cases):
+   - Một tài liệu rỗng (kích thước 0 bytes) để kiểm tra xem hệ thống có phát hiện và chặn dữ liệu lỗi hay không.
+   - Một tài liệu có 2 phiên bản (nội dung sửa đổi) để phục vụ việc kiểm tra tính năng cập nhật phiên bản (Versioning & Idempotency).
+3. Tải (upload) thành công toàn bộ dữ liệu này lên bucket `raw-documents` trên MinIO, tổ chức theo cấu trúc tiền tố đường dẫn (Object Key Prefix) phân biệt rõ ràng giữa các doanh nghiệp.
 
 ---
 
-## 🟡 MỨC 2: HƯỚNG DẪN CHI TIẾT & PHAO CỨU SINH (Chỉ mở khi bị tắc)
+## 🟢 MỨC 1: ĐỊNH HƯỚNG TỰ TÌM HIỂU
+
+### 1. Khái Niệm Cốt Lõi
+- **Test Data Design trong Data Engineering:** Tại sao một kỹ sư dữ liệu giỏi luôn thiết kế dữ liệu kiểm thử có "bẫy" trước khi viết code xử lý? Nếu chỉ test với dữ liệu hoàn hảo (happy path), điều gì sẽ xảy ra khi hệ thống vận hành thực tế?
+- **Khái niệm "Thư mục" trong Object Storage (S3 / MinIO):** Trong MinIO hoặc AWS S3, thực chất không có khái niệm cây thư mục vật lý như trên ổ đĩa máy tính. Tất cả chỉ là các chuỗi ký tự gọi là **Object Key** (ví dụ: `tenant_retail/chinh_sach.md`). Cơ chế này giúp ích gì cho việc phân chia vùng dữ liệu của từng khách hàng?
+- **Data Quality & Schema Validation:** Khi một file hỏng hoặc file rỗng đi vào pipeline, hệ thống nên phản ứng thế nào? Dừng toàn bộ pipeline hay ghi nhận log lỗi và tiếp tục xử lý các file hợp lệ khác?
+
+### 2. Từ Khóa Tra Cứu (Search Keywords)
+- `data quality testing edge cases in data pipelines`
+- `s3 key naming best practices folder structure multi tenant`
+- `handling empty or corrupted files in data ingestion`
+- `synthetic data generation for rag testing`
+
+### 3. Câu Hỏi Tư Duy Để Bạn Tự Kiểm Tra Bản Thân
+- *Nếu hai công ty khác nhau cùng có một file tên là `noi_quy.txt`, làm sao để hệ thống lưu trữ trên MinIO và Database không bao giờ ghi đè dữ liệu của nhau?*
+- *Để kiểm tra tính năng "Cách ly doanh nghiệp (Tenant Isolation)", bạn sẽ thiết kế câu hỏi thử nghiệm như thế nào? (Gợi ý: Một câu hỏi chỉ có trong tài liệu của công ty A nhưng mang sang hỏi với tư cách là nhân viên công ty B).*
+
+---
+
+## 🟡 MỨC 2: GỢI Ý LUỒNG XỬ LÝ & LƯU Ý KHI GẶP LỖI
+
+*(Nếu bạn đã tự tìm hiểu từ 1–2 tiếng mà vẫn vướng mắc, hãy tham khảo các gợi ý dưới đây)*
 
 <details>
-<summary>👉 <b>Bấm vào đây để xem hướng dẫn chi tiết từng bước</b></summary>
+<summary>👉 <b>Bấm vào đây để xem gợi ý luồng thực hiện</b></summary>
 
-### Bước 1: Tạo cấu trúc file trong thư mục `sample_data/`
+### 1. Gợi Ý Cấu Trúc Thư Mục Dữ Liệu
+Bạn có thể tự do sáng tạo nội dung văn bản liên quan đến các chủ đề gần gũi (nhân sự, chính sách, hướng dẫn kỹ thuật), tổ chức thành các thư mục con trong thư mục `sample_data/` của dự án:
+- **Nhóm 1: Doanh nghiệp bán lẻ (`tenant_retail`)**
+  - Tài liệu chính sách đổi trả hàng hóa (nêu rõ các mốc ngày, điều kiện).
+  - Tài liệu quy chế hoa hồng bán hàng (nêu các mức doanh số và tỷ lệ %).
+  - Một file rỗng (0 bytes) để làm dữ liệu bẫy.
+- **Nhóm 2: Doanh nghiệp công nghệ phần mềm (`tenant_tech`)**
+  - Tài liệu hướng dẫn onboarding cho lập trình viên mới (quy trình Git, quy định giờ làm việc).
+  - Quy định an toàn bảo mật thông tin và sử dụng công cụ AI.
 
-#### 1. Tenant 1: Công ty Bán Lẻ (`tenant_retail`)
-Tạo thư mục `sample_data/tenant_retail/`:
-- **File 1:** `sample_data/tenant_retail/quy_che_doi_tra.md`
-  ```markdown
-  # CHÍNH SÁCH ĐỔI TRẢ HÀNG HÓA
-  1. Thời hạn đổi trả: Khách hàng được đổi trả sản phẩm trong vòng 30 ngày kể từ ngày nhận hàng.
-  2. Điều kiện sản phẩm: Hàng hóa còn nguyên tem mác, chưa qua sử dụng, có hóa đơn mua hàng.
-  3. Chi phí vận chuyển: Miễn phí đổi trả nếu lỗi từ nhà sản xuất. Khách chịu phí 30.000 VNĐ nếu đổi theo nhu cầu cá nhân.
-  ```
-- **File 2:** `sample_data/tenant_retail/chinh_sach_hoa_hong.txt`
-  ```text
-  CHÍNH SÁCH HOA HỒNG NHÂN VIÊN KINH DOANH
-  - Doanh số dưới 50 triệu/tháng: Hoa hồng 3%.
-  - Doanh số từ 50 - 100 triệu/tháng: Hoa hồng 5%.
-  - Doanh số trên 100 triệu/tháng: Hoa hồng 7% và thưởng nóng 2 triệu đồng.
-  Tiền hoa hồng được thanh toán vào ngày 10 hàng tháng cùng lương cứng.
-  ```
-- **File 3 (File bẫy - File rỗng):** `sample_data/tenant_retail/empty_document.txt`
-  *(Tạo file không có bất kỳ ký tự nào, dung lượng 0 bytes).*
+*(Bạn có thể tham khảo một số nội dung văn bản mẫu có sẵn trong thư mục [`sample_data/`](../../sample_data/) của repo để lấy ý tưởng).*
 
-#### 2. Tenant 2: Công ty Công Nghệ Phần Mềm (`tenant_tech`)
-Tạo thư mục `sample_data/tenant_tech/`:
-- **File 1:** `sample_data/tenant_tech/onboarding_developer.md`
-  ```markdown
-  # HƯỚNG DẪN ONBOARDING KỸ THUẬT CHO DEVELOPER MỚI
-  1. Yêu cầu môi trường: Cài đặt Docker, Git, và cấu hình SSH key vào GitHub công ty.
-  2. Quy trình làm việc: Mọi task đều phải tạo nhánh theo định dạng `feature/JIRA-ID`, tạo PR và cần ít nhất 2 approvals để merge vào nhánh main.
-  3. Giờ làm việc: Core hours từ 09:30 đến 16:30. Có thể làm việc từ xa (Remote) 2 ngày/tuần sau thời gian thử việc.
-  ```
-- **File 2:** `sample_data/tenant_tech/chinh_sach_bao_mat.txt`
-  ```text
-  QUY ĐỊNH BẢO MẬT VÀ SỬ DỤNG DỮ LIỆU
-  Tuyệt đối không đưa mã nguồn nội bộ hoặc dữ liệu khách hàng lên các công cụ AI công cộng nếu chưa được cấp phép.
-  Mọi mật khẩu và API Key phải được lưu trữ trong HashiCorp Vault, cấm hardcode trong mã nguồn.
-  Vi phạm quy định bảo mật có thể bị chấm dứt hợp đồng lao động ngay lập tức.
-  ```
+### 2. Thao Tác Đưa Dữ Liệu Lên MinIO
+- Mở MinIO Console trên trình duyệt (`http://localhost:9001`).
+- Đăng nhập vào bucket `raw-documents`.
+- Sử dụng tính năng tạo folder trên MinIO UI để tạo 2 folder tương ứng: `tenant_retail/` và `tenant_tech/`.
+- Tải các file văn bản tương ứng vào từng thư mục.
+- Kiểm tra danh sách đường dẫn hiển thị trên MinIO để đảm bảo tên tenant luôn nằm ở đầu đường dẫn file (ví dụ: `tenant_retail/quy_che_doi_tra.md`).
 
-### Bước 2: Tải dữ liệu lên MinIO Console
-1. Truy cập trình duyệt: `http://localhost:9001` (Đăng nhập: `minioadmin` / `minioadmin_secret`).
-2. Nhấp vào bucket `raw-documents`.
-3. Bấm **Create Folder** -> Đặt tên: `tenant_retail`.
-4. Bấm vào thư mục `tenant_retail` vừa tạo -> Bấm **Upload** -> **Upload Files** -> Tải 3 file trong thư mục `sample_data/tenant_retail/` lên.
-5. Tương tự, quay lại thư mục gốc của bucket, tạo folder `tenant_tech` và upload 2 file của công nghệ lên.
-
-### Bước 3: Kiểm tra cấu trúc đường dẫn (Object Keys)
-Đảm bảo trên MinIO hiển thị danh sách các object với đường dẫn chuẩn:
-- `raw-documents/tenant_retail/quy_che_doi_tra.md`
-- `raw-documents/tenant_retail/chinh_sach_hoa_hong.txt`
-- `raw-documents/tenant_retail/empty_document.txt`
-- `raw-documents/tenant_tech/onboarding_developer.md`
-- `raw-documents/tenant_tech/chinh_sach_bao_mat.txt`
+### 3. Chuẩn Bị Câu Hỏi Kiểm Thử Nghiệp Vụ (Ground Truth Questions)
+Sau khi có dữ liệu, hãy ghi chú lại khoảng 3–5 câu hỏi kèm đáp án mong muốn để sau này dùng cho task kiểm thử tìm kiếm ở Tuần 7:
+- *Ví dụ 1 (Câu hỏi bình thường):* "Khách hàng được đổi trả sản phẩm trong bao nhiêu ngày?" -> Kỳ vọng tìm thấy đoạn văn trong file của `tenant_retail`.
+- *Ví dụ 2 (Câu hỏi bẫy rò rỉ dữ liệu):* Đứng ở quyền `tenant_tech` và hỏi: "Tỷ lệ hoa hồng doanh số trên 100 triệu là bao nhiêu?" -> Kỳ vọng hệ thống trả về: *Không tìm thấy thông tin* (bởi vì thông tin này chỉ thuộc về `tenant_retail`).
 
 </details>

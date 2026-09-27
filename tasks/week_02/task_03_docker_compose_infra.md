@@ -1,136 +1,78 @@
-# Task 0.3: Dựng Hạ Tầng Lưu Trữ & Database Với Docker Compose (MinIO & PostgreSQL + pgvector)
+# Task 0.3: Dựng Cụm Hạ Tầng MinIO & PostgreSQL (pgvector) Với Docker Compose
 
-- **Giai đoạn:** Giai đoạn 0 — Khởi tạo nền tảng
-- **Thời lượng ước tính:** 3 – 4 ngày (6 – 8 giờ làm việc)
-- **Mục tiêu:** U tạo file `docker-compose.yml` để tự động hóa việc khởi động cụm hạ tầng cốt lõi gồm: PostgreSQL phiên bản có sẵn extension `pgvector` và MinIO Object Storage (tương thích AWS S3 API).
-
----
-
-## 🎯 Tiêu Chí Hoàn Thành (Definition of Done - DoD)
-1. Chỉ cần gõ đúng 1 lệnh `docker compose -f infra/docker-compose.yml up -d` là cả 2 container `postgres` và `minio` cùng chạy ngầm thành công.
-2. U truy cập được Web UI của MinIO tại `http://localhost:9001`, đăng nhập tạo được bucket tên là `raw-documents`.
-3. Dùng tool quản lý DB (như **DBeaver** hoặc VS Code Database Client) kết nối thành công vào PostgreSQL tại `localhost:5432`, chạy lệnh `CREATE EXTENSION IF NOT EXISTS vector;` không báo lỗi.
-4. Khi chạy `docker compose down` rồi `docker compose up -d` lại, dữ liệu trong bucket MinIO và trong Postgres không bị mất (nhờ cấu hình Docker Volume chuẩn).
+- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
+- **Mục tiêu:** Hiểu cách dùng Docker Compose để điều phối nhiều dịch vụ chạy cùng nhau trong một mạng nội bộ; dựng thành công dịch vụ lưu trữ file MinIO (chuẩn S3) và cơ sở dữ liệu PostgreSQL có sẵn extension `pgvector`.
 
 ---
 
-## 🟢 MỨC 1: TỰ KHÁM PHÁ (U làm phần này trước)
+## 🎯 Mục Tiêu Cần Đạt (Definition of Done)
 
-### 1. Từ Khóa Tìm Kiếm (Search Keywords)
-- `docker compose file format version 3 services`
-- `pgvector docker compose example postgres:16`
-- `minio docker compose minio server with console port 9001`
-- `docker compose named volumes persist data`
-
-### 2. Câu Hỏi Định Hướng Tư Duy
-- *MinIO có 2 cổng: port `9000` và port `9001`. Cổng nào dùng cho code Python (API S3 Client) gọi tới, cổng nào dùng cho con người mở trình duyệt vào xem?*
-- *Nếu trong `docker-compose.yml` không định nghĩa `volumes`, chuyện gì sẽ xảy ra với các bảng và dữ liệu trong Database khi U gõ `docker compose down`?*
-- *Tại sao ta lại dùng image `pgvector/pgvector:pg16` thay vì image `postgres:16` nguyên bản của Docker Hub?*
+Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
+1. Bạn xây dựng được file `docker-compose.yml` định nghĩa 2 dịch vụ (`postgres` và `minio`), có cấu hình cổng (ports), biến môi trường (environment), và phân vùng lưu trữ lâu dài (named volumes).
+2. Khi chạy lệnh khởi động Docker Compose, cả hai container cùng khởi chạy ngầm thành công.
+3. Mở được giao diện Web Console của MinIO trên trình duyệt Windows (`localhost:9001`), đăng nhập được bằng tài khoản bạn đã cấu hình và tạo được bucket đầu tiên tên là `raw-documents`.
+4. Dùng một công cụ quản lý cơ sở dữ liệu (như **DBeaver** hoặc VS Code Database Extension) kết nối thành công vào PostgreSQL tại `localhost:5432`.
+5. Khi bạn tắt các container rồi bật lại, dữ liệu trong MinIO và PostgreSQL vẫn được giữ nguyên vẹn (nhờ cơ chế Docker Volume).
 
 ---
 
-## 🟡 MỨC 2: HƯỚNG DẪN CHI TIẾT & PHAO CỨU SINH (Chỉ mở khi bị tắc)
+## 🟢 MỨC 1: ĐỊNH HƯỚNG TỰ TÌM HIỂU
+
+### 1. Khái Niệm Cốt Lõi
+- **Docker Compose:** Công cụ định nghĩa và chạy các ứng dụng Docker gồm nhiều container. Thay vì phải gõ nhiều câu lệnh `docker run` phức tạp với hàng tá tham số, toàn bộ kiến trúc được mô tả trong 1 file YAML.
+- **Object Storage & Chuẩn S3 (MinIO):** Trong các hệ thống dữ liệu lớn, tại sao người ta không lưu file tài liệu thô trực tiếp vào ổ cứng cục bộ hay database, mà lại lưu vào kho đối tượng (Object Storage)? MinIO đóng vai trò giả lập AWS S3 như thế nào khi phát triển dưới máy local?
+- **pgvector Extension:** PostgreSQL thuần túy vốn dành cho dữ liệu bảng quan hệ. Tại sao để làm ứng dụng RAG/AI, ta cần cài thêm extension `pgvector`?
+- **Docker Volumes (Data Persistence):** Vòng đời dữ liệu của container là tạm thời (ephemeral). Làm thế nào để dữ liệu trong database và bucket không bị biến mất khi container bị tắt hoặc xóa?
+
+### 2. Từ Khóa Tra Cứu (Search Keywords)
+- `docker compose file format version 3 specification`
+- `minio docker compose server console port configuration`
+- `pgvector docker official image pgvector/pgvector`
+- `docker compose named volumes persist postgres data`
+- `dbeaver connect to postgresql docker local`
+
+### 3. Câu Hỏi Tư Duy Để Bạn Tự Kiểm Tra Bản Thân
+- *MinIO có 2 cổng mặc định: cổng API (thường là 9000) và cổng Web Console (thường là 9001). Cổng nào sẽ dành cho code Python sau này gọi để upload/download file, và cổng nào dành cho con người mở trình duyệt xem trực quan?*
+- *Nếu trong file compose bạn không định nghĩa mục `volumes:` cho PostgreSQL, điều gì sẽ xảy ra khi bạn gõ `docker compose down` rồi khởi động lại?*
+- *Hai container trong cùng một file `docker-compose.yml` có thể giao tiếp với nhau bằng tên dịch vụ (service name) thay vì dùng địa chỉ IP không? Cơ chế đó gọi là gì?*
+
+---
+
+## 🟡 MỨC 2: GỢI Ý LUỒNG XỬ LÝ & LƯU Ý KHI GẶP LỖI
+
+*(Nếu bạn đã tự tìm hiểu từ 1–2 tiếng mà vẫn vướng mắc, hãy tham khảo các gợi ý dưới đây)*
 
 <details>
-<summary>👉 <b>Bấm vào đây để xem hướng dẫn chi tiết từng bước</b></summary>
+<summary>👉 <b>Bấm vào đây để xem gợi ý luồng thực hiện</b></summary>
 
-### Bước 1: Tạo file cấu hình `infra/docker-compose.yml`
-Tạo file tại đường dẫn chính xác: `infra/docker-compose.yml` với nội dung hoàn chỉnh:
+### 1. Cấu Trúc Tổng Quan Của Một File `docker-compose.yml`
+Một file compose chuẩn thường bao gồm các khối chính:
+- **`services:`** Định nghĩa danh sách các ứng dụng cần chạy.
+  - **`postgres`:**
+    - Nên chọn image có sẵn extension vector, ví dụ: `pgvector/pgvector:pg16` thay vì image Postgres gốc.
+    - Cần khai báo các biến môi trường: user, password, tên database mặc định.
+    - Chuyển tiếp cổng (thường là `"5432:5432"`).
+    - Ánh xạ thư mục dữ liệu nội bộ của Postgres (`/var/lib/postgresql/data`) vào một Docker Volume để không bị mất dữ liệu.
+  - **`minio`:**
+    - Sử dụng image chính thức từ MinIO.
+    - Cần truyền lệnh chạy (command) chỉ định cả thư mục dữ liệu và cổng cho giao diện Console (ví dụ: `server /data --console-address ":9001"`).
+    - Biến môi trường quản trị viên (root user & root password).
+    - Chuyển tiếp 2 cổng ra máy host: cổng 9000 (API) và cổng 9001 (Web UI).
+- **`volumes:`** Khai báo danh sách các volume để Docker quản lý bộ nhớ lâu dài.
 
-```yaml
-version: '3.8'
+*(Bạn có thể tham khảo một file mẫu sẵn có tại thư mục [`infra/docker-compose.yml`](../../infra/docker-compose.yml) trong dự án để đối chiếu với cấu hình bạn tự viết).*
 
-services:
-  postgres:
-    image: pgvector/pgvector:pg16
-    container_name: docflow_postgres
-    restart: always
-    environment:
-      POSTGRES_USER: docflow_admin
-      POSTGRES_PASSWORD: docflow_secret_password
-      POSTGRES_DB: docflow_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - docflow_network
+### 2. Các Lệnh Thao Tác Thường Dùng Với Docker Compose
+- Khởi động cụm dịch vụ và cho chạy ngầm: `docker compose up -d`
+- Xem trạng thái các container đang chạy: `docker compose ps`
+- Xem log hiển thị của các dịch vụ để debug khi gặp lỗi: `docker compose logs -f` (hoặc chỉ định tên dịch vụ: `docker compose logs -f postgres`)
+- Dừng toàn bộ dịch vụ một cách an toàn: `docker compose down`
 
-  minio:
-    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
-    container_name: docflow_minio
-    restart: always
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin_secret
-    ports:
-      - "9000:9000"   # S3 API Port
-      - "9001:9001"   # Web Console Port
-    volumes:
-      - minio_data:/data
-    networks:
-      - docflow_network
-
-volumes:
-  postgres_data:
-    driver: local
-  minio_data:
-    driver: local
-
-networks:
-  docflow_network:
-    driver: bridge
-```
-
-### Bước 2: Tạo file rỗng cho script khởi tạo SQL
-Tạo file: `infra/sql/init.sql` (tạm thời để trống hoặc chỉ thêm lệnh kích hoạt extension vector):
-```sql
--- Kích hoạt extension pgvector
-CREATE EXTENSION IF NOT EXISTS vector;
-```
-
-### Bước 3: Khởi chạy cụm dịch vụ
-Từ thư mục gốc của dự án (`~/projects/docflow`), chạy lệnh:
-```bash
-docker compose -f infra/docker-compose.yml up -d
-```
-
-Kiểm tra trạng thái các container:
-```bash
-docker compose -f infra/docker-compose.yml ps
-```
-Cả 2 dịch vụ `docflow_postgres` và `docflow_minio` phải có trạng thái `Up` (Running).
-
-### Bước 4: Kiểm tra MinIO qua Trình duyệt
-1. Mở trình duyệt trên Windows 11 (Chrome/Edge), truy cập: `http://localhost:9001`.
-2. Đăng nhập với thông tin đã khai báo trong docker-compose:
-   - **Username:** `minioadmin`
-   - **Password:** `minioadmin_secret`
-3. Vào mục **Buckets** -> Bấm **Create Bucket** -> Đặt tên là `raw-documents` -> Bấm **Create**.
-
-### Bước 5: Kết nối Database bằng DBeaver
-1. Tải và cài đặt DBeaver Community trên Windows: `https://dbeaver.io/download/`.
-2. Mở DBeaver -> Bấm nút **New Database Connection** (icon hình phích cắm) -> Chọn **PostgreSQL**.
-3. Điền thông số kết nối:
-   - **Host:** `localhost`
-   - **Port:** `5432`
-   - **Database:** `docflow_db`
-   - **Username:** `docflow_admin`
-   - **Password:** `docflow_secret_password`
-4. Bấm **Test Connection**. Khi hiện thông báo *"Connected"* màu xanh, bấm **Finish**.
-5. Mở một SQL Editor mới trong DBeaver và chạy:
-   ```sql
-   SELECT * FROM pg_extension;
-   ```
-   Kiểm tra xem dòng có `extname = 'vector'` đã tồn tại hay chưa.
-
-### ⚠️ Bắt Lỗi Thường Gặp (Troubleshooting)
-- **Lỗi: `Bind for 0.0.0.0:5432 failed: port is already allocated`**
-  - *Nguyên nhân:* Trên máy tính của U trước đó đã từng cài đặt PostgreSQL chạy nền dạng Windows Service và đang chiếm cổng 5432.
-  - *Cách xử lý:* Mở Task Manager hoặc Services của Windows, tìm dịch vụ `postgresql-x64-...`, click chuột phải chọn **Stop** và đổi chế độ sang **Manual**.
-- **Lỗi: `docker compose command not found`**
-  - *Cách xử lý:* Nếu lệnh `docker compose` (viết liền không gạch ngang) chưa nhận, thử lệnh cũ: `docker-compose` (có gạch ngang).
+### 3. Những Vấn Đề Thường Gặp
+- **Trùng cổng 5432 (Port is already allocated):**
+  - Rất nhiều bạn học ngành CNTT từng cài đặt PostgreSQL trực tiếp lên Windows trong các môn học cơ sở dữ liệu trước đó, khiến cổng 5432 trên Windows luôn bị chiếm dụng bởi Windows Service.
+  - *Cách xử lý:* Bạn có thể mở ứng dụng `Services` trên Windows, tìm dịch vụ PostgreSQL local và bấm Stop; hoặc đổi cổng ánh xạ bên ngoài máy host trong file compose thành cổng khác (ví dụ `"5433:5432"`).
+- **Dữ liệu trong MinIO bị reset mỗi lần restart:**
+  - Kiểm tra xem đường dẫn ánh xạ volume của MinIO đã trỏ đúng vào thư mục `/data` bên trong container hay chưa.
 
 </details>
