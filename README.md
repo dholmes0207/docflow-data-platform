@@ -48,6 +48,7 @@ docflow-data-platform/
 │   └── week_02/              # Tuần 2: Hạ tầng lưu trữ, Database & Data Modeling
 ├── infra/                    # Thư mục cấu hình hạ tầng mẫu (tham khảo)
 │   ├── docker-compose.yml
+│   ├── .env.example          # Mẫu biến môi trường (copy thành .env, không commit .env)
 │   └── sql/init.sql
 ├── sample_data/              # Dữ liệu tài liệu giả lập phục vụ kiểm thử
 └── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
