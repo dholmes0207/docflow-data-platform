@@ -36,8 +36,8 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - [Task 0.5: Chuẩn bị Mock Data & Edge Cases](../tasks/week_02/task_05_mock_data.md)
 
 ### Sprint 3 (30/11 – 13/12/2026): Khung Dự Án & Bộ Dữ Liệu Thật Sự
-- 🔒 Task 0.6: Mở rộng bộ dữ liệu (corpus) & bộ câu hỏi đánh giá *(mở ngày 23/11/2026)*
-- 🔒 Task 1.0: Khung dự án Python & quy ước code *(mở ngày 23/11/2026)*
+- [Task 0.6: Mở rộng bộ dữ liệu (corpus) & bộ câu hỏi đánh giá](../tasks/week_03/task_06_expand_corpus.md)
+- [Task 1.0: Khung dự án Python & quy ước code](../tasks/week_03/task_07_project_skeleton.md)
 
 ### Sprint 4 (14/12 – 27/12/2026): Trích Xuất & Làm Sạch Văn Bản (Data Cleaning)
 - 🔒 Task 1.1: Python Client kết nối MinIO & quét file theo Tenant *(mở ngày 07/12/2026)*
