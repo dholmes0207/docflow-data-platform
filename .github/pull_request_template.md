@@ -1,5 +1,5 @@
-## Tuần / Task
-- Tuần:
+## Sprint / Task
+- Sprint: <!-- ví dụ: Sprint 2 -->
 - Task: <!-- ví dụ: Task 0.3 -->
 
 ## Đã làm được gì
@@ -17,8 +17,8 @@
 -
 
 ## Checklist
-- [ ] Tên nhánh dạng `week-XX/task-X.Y-mo-ta-ngan`
-- [ ] CI xanh cả 3 check: `hygiene`, `schema`, `secrets`
+- [ ] Tên nhánh dạng `sprint-XX/task-X.Y-mo-ta-ngan`
+- [ ] CI xanh cả 4 check: `hygiene`, `schema`, `unit`, `secrets`
 - [ ] Không sửa, xóa hay `skip` test trong `tests/gates/`
 - [ ] Đã đổi trạng thái task thành `Sẵn sàng Review` và dán link PR trong `roadmap/weekly_tracker.md`
 - [ ] Không commit file `.env`, mật khẩu hay dữ liệu thật

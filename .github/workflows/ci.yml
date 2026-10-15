@@ -1,5 +1,5 @@
 # CI chạy trên mọi Pull Request và mỗi lần main thay đổi.
-# 3 job dưới đây là 3 "check" bắt buộc phải xanh trước khi mentor merge (cấu hình trong ruleset của main).
+# 4 job dưới đây là 4 "check" bắt buộc phải xanh trước khi mentor merge (cấu hình trong ruleset của main).
 # Cách chạy từng job trên máy bạn: xem CONTRIBUTING.md, mục "Kiểm tra tự động".
 name: ci
 
@@ -59,6 +59,23 @@ jobs:
         run: uv venv --python 3.12 && uv pip install -r requirements-dev.txt
       - name: Gate test schema
         run: .venv/bin/pytest tests/gates/test_schema_constraints.py -q
+
+  # Unit test của chính học viên (từ Task 1.0): cài dự án theo pyproject.toml rồi chạy mọi test ngoài tests/gates/.
+  # Chưa có pyproject.toml thì bỏ qua (xanh); đã có pyproject.toml mà không có test nào thì pytest báo đỏ.
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9.0.0
+      - name: Unit test của học viên
+        run: |
+          if [ ! -f pyproject.toml ]; then
+            echo "Chưa có pyproject.toml (Task 1.0), chưa có unit test để chạy."
+            exit 0
+          fi
+          uv venv --python 3.12
+          uv pip install -r requirements-dev.txt -e .
+          .venv/bin/pytest tests --ignore=tests/gates -q
 
   # Quét mật khẩu / API key / token trong toàn bộ lịch sử Git.
   secrets:
