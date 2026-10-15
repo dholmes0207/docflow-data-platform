@@ -1,0 +1,7 @@
+# Cấu hình lint/format Python cho toàn repo (dùng chung cho test và code pipeline sau này).
+line-length = 120
+target-version = "py310"
+
+[lint]
+# E/F: lỗi cú pháp & biến không dùng; I: thứ tự import; B: bug phổ biến; UP: cú pháp Python hiện đại
+select = ["E", "F", "I", "B", "UP"]
