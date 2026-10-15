@@ -1,3 +1,9 @@
+<!-- Tiêu đề PR theo Conventional Commits, ví dụ: feat(infra): dựng minio và postgres bằng docker compose -->
+
+## Issue
+<!-- Thay dòng dưới bằng số issue của task, ví dụ: Closes #3 (CI kiểm tra dòng này) -->
+Closes #
+
 ## Sprint / Task
 - Sprint: <!-- ví dụ: Sprint 2 -->
 - Task: <!-- ví dụ: Task 0.3 -->
@@ -17,7 +23,9 @@
 -
 
 ## Checklist
-- [ ] Tên nhánh dạng `sprint-XX/task-X.Y-mo-ta-ngan`
+- [ ] Tên nhánh dạng `sprint-XX/task-X.Y-mo-ta-ngan` (CONTRIBUTING.md mục 2)
+- [ ] Tiêu đề PR và mọi commit theo Conventional Commits
+- [ ] Có dòng `Closes #<số issue>`, đã tick các DoD đã xong trong issue
 - [ ] CI xanh cả 4 check: `hygiene`, `schema`, `unit`, `secrets`
 - [ ] Không sửa, xóa hay `skip` test trong `tests/gates/`
 - [ ] Đã đổi trạng thái task thành `Sẵn sàng Review` và dán link PR trong `roadmap/weekly_tracker.md`

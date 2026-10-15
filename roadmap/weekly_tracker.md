@@ -8,12 +8,13 @@ Bảng này là không gian trao đổi và ghi nhận tiến độ học tập 
 ## 📌 Quy Trình Mỗi Sprint
 
 1. **Trong sprint:**
+   - Bắt đầu task nào thì mở issue cho task đó bằng mẫu **"Bắt đầu một task"** và tạo nhánh theo quy tắc trong [`CONTRIBUTING.md`](../CONTRIBUTING.md) mục 2.
    - Cập nhật cột **Trạng thái** ngay khi bắt đầu một task (`Đang thực hiện`). Chỉ dùng đúng 4 giá trị:
      `Chưa bắt đầu` / `Đang thực hiện` / `Sẵn sàng Review` / `Hoàn thành` (CI sẽ báo lỗi nếu ghi khác).
    - Ghi lại kiến thức mới, lỗi đã gặp và cách bạn giải quyết vào file `docs/learning_log.md` của bạn (gợi ý cách ghi: [`docs/README.md`](../docs/README.md)).
-   - Bị tắc quá 2 buổi thì nhắn mentor ngay, không đợi đến buổi review.
+   - Bị tắc quá 2 buổi thì mở issue mẫu **"Hỏi mentor / Bị tắc"** rồi nhắn link cho mentor ngay, không đợi đến buổi review.
 2. **Cuối sprint (trước cột Hạn):**
-   - Mở Pull Request cho task, đợi CI xanh, đổi trạng thái thành `Sẵn sàng Review` và dán link PR vào cột **Link PR**.
+   - Mở Pull Request cho task (mô tả có `Closes #<số issue>`), đợi CI xanh, đổi trạng thái thành `Sẵn sàng Review` và dán link PR vào cột **Link PR**.
 3. **Buổi review:**
    - Bạn demo nhanh kết quả theo các tiêu chí **Definition of Done (DoD)** của từng task.
    - Cùng người hướng dẫn trao đổi về các câu hỏi tư duy trong Mức 1 để củng cố bản chất kỹ thuật.
@@ -26,6 +27,7 @@ Bảng này là không gian trao đổi và ghi nhận tiến độ học tập 
 
 | Sprint | Task | Trọng Tâm Bài Toán | Trạng Thái | Link PR / Bằng Chứng | Đánh Giá & Góp Ý Của Reviewer | Hạn |
 |:---:|:---|:---|:---:|:---:|:---|:---:|
+| **S1** | Task 0.0 | Quy trình Git & GitHub: issue, nhánh, commit, Pull Request, review | `Chưa bắt đầu` | | | 15/11/2026 |
 | **S1** | Task 0.1 | Môi trường Linux chuẩn trên Windows (WSL2 Ubuntu 24.04 & VS Code) | `Chưa bắt đầu` | | | 15/11/2026 |
 | **S1** | Task 0.2 | Cài đặt Docker Desktop & Tối ưu RAM qua `.wslconfig` | `Chưa bắt đầu` | | | 15/11/2026 |
 | **S2** | Task 0.3 | Dựng cụm MinIO + PostgreSQL (pgvector) với Docker Compose | `Chưa bắt đầu` | | | 29/11/2026 |

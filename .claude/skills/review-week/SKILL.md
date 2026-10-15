@@ -22,6 +22,7 @@ bằng chứng, mentor đọc xong là quyết định được ngay. Viết m�
 ## Bước 1: Thu thập
 
 1. Đọc PR: tiêu đề, mô tả (theo mẫu `.github/pull_request_template.md`), danh sách file thay đổi, commit, tên nhánh.
+   Đọc cả issue mà PR đóng (`Closes #N`): nhãn, người được assign, checklist DoD đã tick.
 2. Xác định **task** từ mục "Sprint / Task" trong mô tả PR. Không ghi rõ thì suy ra từ file thay đổi và nói rõ
    là suy ra.
 3. Đọc file task tương ứng trong `tasks/week_XX/` (thư mục `week_XX` = Sprint XX), lấy danh sách tiêu chí **Definition of Done** và
@@ -54,6 +55,7 @@ Sau đó chạy thêm các phép thử theo task:
 
 | Task | Phép thử thêm |
 |---|---|
+| 0.0 (Quy trình Git) | Issue mà PR đóng: tạo bằng mẫu "Bắt đầu một task" (nhãn `task`), assign cho học viên, có checklist DoD. Nhánh tạo từ `main` gần nhất: `git merge-base origin/main review/pr-<PR>` trùng hoặc rất gần đỉnh `main`, `git diff --stat origin/main...review/pr-<PR>` chỉ chứa file của task. `git log --format='%an <%ae> %s' origin/main..review/pr-<PR>`: ≥ 3 commit, mỗi commit một ý (đọc `git show --stat` từng commit), email không phải email cá nhân lộ ra ngoài ý muốn, commit gắn được với tài khoản GitHub (trường `author.login` của commit qua API không rỗng). `docs/git_cheatsheet.md`: ≥ 12 lệnh viết bằng lời của học viên, có mục "Lỗi đã gặp", mục xung đột có dán nguyên văn 3 dấu `<<<<<<<` / `=======` / `>>>>>>>`, có thông báo bị từ chối push `main`. SSH (DoD 1): không kiểm chứng được từ repo → **CẦN DEMO** `ssh -T git@github.com` và `git remote -v`. DoD 8: **luôn** để lại ít nhất 1 góp ý cần sửa ở vòng đầu (kể cả khi bài tốt), vì vòng review là một tiêu chí. DoD 9: kiểm tra ở PR kế tiếp: nhánh Task 0.0 không còn trên GitHub, nhánh mới tạo từ `main` sau squash merge. |
 | 0.1, 0.2 (môi trường máy học viên) | Không kiểm chứng được từ repo. Dựa vào ảnh chụp / output lệnh trong mô tả PR; tiêu chí nào thiếu bằng chứng thì đánh dấu **CẦN DEMO**. |
 | 0.3 (Docker Compose) | Tìm file compose học viên nộp. `cp <thư mục>/.env.example <thư mục>/.env` (nếu có) rồi `docker compose -f <file> config --quiet`. Soát: 2 service `postgres` + `minio`, named volumes cho cả 2 (DoD 5), cổng 9000 + 9001 + 5432, mật khẩu **không** ghi cứng trong YAML. |
 | 0.4 (Data Modeling) | CI check `schema` đã tự chạy bộ gate test lên `db/schema.sql`, nên chỉ cần đọc kết quả. Nếu đỏ thì liệt kê đúng tình huống dữ liệu sai chưa bị chặn (tên test), **không** gợi ý cú pháp SQL để sửa. Soát thêm: `docs/erd.md` (DoD 1) và `docs/schema_decisions.md` (DoD 5) giải thích được **từng** ràng buộc, không chỉ liệt kê. Chống sao chép: `diff <(grep -v '^ *--' db/schema.sql) <(grep -v '^ *--' infra/sql/init.sql)`. Nếu gần như trùng khớp hoặc chỉ khác comment, đánh dấu **CẦN DEMO** và chuẩn bị 2–3 câu hỏi buộc học viên giải thích lại bằng lời (ví dụ: vì sao khóa ngoại phải gồm cả `tenant_id`, vì sao cần partial index thay vì UNIQUE thường). |
@@ -74,10 +76,17 @@ Làm xong thì dọn: `git worktree remove ../review-pr-<PR> && git branch -D re
 
 ## Bước 4: Quy trình
 
-- Tên nhánh có đúng dạng `sprint-XX/task-X.Y-...` không.
-- Commit message có theo Conventional Commits không.
+CI (bước "Quy ước Git" của `hygiene`) đã kiểm tra tên nhánh, tiêu đề PR, commit message và dòng `Closes #`. Ở đây chỉ soát
+những gì máy không bắt được:
+
+- Nhánh bắt đầu bằng `sprint-`: học viên **không** dùng tiền tố của mentor/bot (`claude/`, `mentor/`, `release/tasks-`)
+  để né kiểm tra. Có thì nêu thành mục riêng.
+- Issue được đóng là đúng issue của task này, checklist DoD trong issue khớp với những gì PR thực sự làm.
+- Commit có **nội dung** đúng với message (không phải `fix: sửa` cho một commit đổi 20 file), mỗi commit một ý.
+- PR chỉ chứa thay đổi của một task, nhánh tạo từ `main` mới (không kéo theo file của task trước).
 - `roadmap/weekly_tracker.md` đã đổi trạng thái task thành `Sẵn sàng Review` và có link PR chưa.
 - Mô tả PR có điền đủ các mục của mẫu không.
+- Từ vòng review thứ 2: học viên đã trả lời từng thread góp ý và sửa trên cùng nhánh, không mở PR mới.
 
 Lỗi quy trình chỉ là **ghi chú**, không tự nó làm bài thành CẦN SỬA, trừ khi lặp lại sau khi đã được nhắc.
 
@@ -114,5 +123,8 @@ Task: <X.Y> · Commit: <sha ngắn> · CI: hygiene <✅/❌> · schema <✅/❌>
 
 Sau đó hỏi mentor muốn làm gì tiếp:
 1. Đăng kết luận lên PR dưới dạng review (`REQUEST_CHANGES` nếu CẦN SỬA, ngược lại `COMMENT`).
-2. Approve và merge. Chỉ làm khi mentor nói rõ, và chỉ khi kết luận không phải CẦN SỬA.
-3. Chỉ giữ ở đây, không đăng.
+2. Approve và merge bằng **squash merge** (tiêu đề PR thành commit trên `main`). Chỉ làm khi mentor nói rõ, và chỉ khi
+   kết luận không phải CẦN SỬA.
+3. Với ĐẠT KÈM GHI CHÚ: mở issue `[Góp ý PR #<số>] ...` liệt kê các góp ý không chặn để học viên làm ở sprint sau.
+   Chỉ làm khi mentor nói rõ.
+4. Chỉ giữ ở đây, không đăng.

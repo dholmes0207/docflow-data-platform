@@ -1,0 +1,49 @@
+name: Bắt đầu một task
+description: Mở khi bạn bắt đầu một task trong tasks/. Mỗi task một issue; PR của task ghi "Closes #<số issue>" để issue tự đóng khi merge.
+title: "[Task X.Y] <tên task>"
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sau khi tạo issue: **tự assign** cho bạn (cột bên phải → Assignees), rồi tạo nhánh theo quy tắc
+        trong [CONTRIBUTING.md](https://github.com/dholmes0207/docflow-data-platform/blob/main/CONTRIBUTING.md) mục 2.
+        Repo công khai: **không** dán mật khẩu, token, nội dung file `.env` vào issue.
+  - type: input
+    id: task
+    attributes:
+      label: Task
+      description: Số task và link tới file đề bài.
+      placeholder: "Task 0.0: tasks/week_01/task_00_git_github_workflow.md"
+    validations:
+      required: true
+  - type: input
+    id: branch
+    attributes:
+      label: Tên nhánh sẽ dùng
+      placeholder: sprint-01/task-0.0-git-workflow
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: Hạn (theo roadmap/weekly_tracker.md)
+      placeholder: 15/11/2026
+    validations:
+      required: true
+  - type: textarea
+    id: dod
+    attributes:
+      label: Kế hoạch theo Definition of Done
+      description: Chép từng tiêu chí DoD của task thành một dòng `- [ ]` (viết gọn bằng lời của bạn). Làm xong tiêu chí nào thì tick tiêu chí đó.
+      value: |
+        - [ ] DoD 1:
+        - [ ] DoD 2:
+        - [ ] DoD 3:
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Điều chưa rõ / rủi ro dự kiến
+      description: Không bắt buộc. Phần nào của đề bài bạn chưa hiểu, hoặc đoán sẽ vướng ở đâu.

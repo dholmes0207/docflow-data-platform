@@ -1,6 +1,10 @@
 # Kiểm tra chạy tự động mỗi lần `git commit` trên máy bạn (cài 1 lần: xem CONTRIBUTING.md).
 # Đây là bản "chạy sớm" của các kiểm tra trong CI (.github/workflows/ci.yml): lỗi bị bắt ngay
 # trên máy thay vì phải đợi CI đỏ.
+# `pre-commit install` cài cả 2 hook: pre-commit (kiểm tra file) và commit-msg (kiểm tra commit message).
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+
 repos:
   # Chặn commit mật khẩu, API key, token...
   - repo: https://github.com/gitleaks/gitleaks
@@ -26,3 +30,9 @@ repos:
         entry: ruff format
         language: system
         types: [python]
+      # Commit message theo Conventional Commits (CONTRIBUTING.md, mục 2)
+      - id: commit-message
+        name: commit message (Conventional Commits)
+        entry: python3 scripts/check_git_conventions.py
+        language: system
+        stages: [commit-msg]
