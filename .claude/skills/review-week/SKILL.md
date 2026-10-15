@@ -1,9 +1,9 @@
 ---
 name: review-week
-description: Review Pull Request hằng tuần của học viên DocFlow. Kiểm tra CI, chạy gate test và các phép thử bổ sung trên chính phần bài nộp, đối chiếu từng tiêu chí Definition of Done của task, rồi soạn kết luận review. Dùng khi mentor gõ /review-week <số PR>, hoặc nhờ review / chấm PR của học viên.
+description: Review Pull Request cuối mỗi sprint của học viên DocFlow. Kiểm tra CI, chạy gate test và các phép thử bổ sung trên chính phần bài nộp, đối chiếu từng tiêu chí Definition of Done của task, rồi soạn kết luận review. Dùng khi mentor gõ /review-week <số PR>, hoặc nhờ review / chấm PR của học viên.
 ---
 
-# Review PR hằng tuần của học viên
+# Review PR cuối sprint của học viên
 
 Bạn đang giúp **mentor** review bài nộp của học viên trong repo DocFlow. Mục tiêu: đưa ra một kết luận có
 bằng chứng, mentor đọc xong là quyết định được ngay. Viết mọi thứ bằng tiếng Việt, xưng "bạn" với học viên.
@@ -22,14 +22,14 @@ bằng chứng, mentor đọc xong là quyết định được ngay. Viết m�
 ## Bước 1: Thu thập
 
 1. Đọc PR: tiêu đề, mô tả (theo mẫu `.github/pull_request_template.md`), danh sách file thay đổi, commit, tên nhánh.
-2. Xác định **task** từ mục "Tuần / Task" trong mô tả PR. Không ghi rõ thì suy ra từ file thay đổi và nói rõ
+2. Xác định **task** từ mục "Sprint / Task" trong mô tả PR. Không ghi rõ thì suy ra từ file thay đổi và nói rõ
    là suy ra.
-3. Đọc file task tương ứng trong `tasks/week_XX/`, lấy danh sách tiêu chí **Definition of Done** và
+3. Đọc file task tương ứng trong `tasks/week_XX/` (thư mục `week_XX` = Sprint XX), lấy danh sách tiêu chí **Definition of Done** và
    **Câu hỏi tư duy**.
 
 ## Bước 2: Cổng CI
 
-Đọc trạng thái 3 check `hygiene`, `schema`, `secrets` trên commit mới nhất của PR.
+Đọc trạng thái 4 check `hygiene`, `schema`, `unit`, `secrets` trên commit mới nhất của PR.
 
 - Có check **đỏ** → kết luận ngay **CẦN SỬA**. Liệt kê check đỏ và trích đúng thông báo lỗi (gate test
   được viết để thông báo lỗi tự giải thích). Bỏ qua bước 3–4, chuyển thẳng sang bước 5.
@@ -58,13 +58,17 @@ Sau đó chạy thêm các phép thử theo task:
 | 0.3 (Docker Compose) | Tìm file compose học viên nộp. `cp <thư mục>/.env.example <thư mục>/.env` (nếu có) rồi `docker compose -f <file> config --quiet`. Soát: 2 service `postgres` + `minio`, named volumes cho cả 2 (DoD 5), cổng 9000 + 9001 + 5432, mật khẩu **không** ghi cứng trong YAML. |
 | 0.4 (Data Modeling) | Nếu học viên nộp file schema riêng: `INIT_SQL_PATH=<file> DATABASE_URL=... pytest tests/gates/test_schema_constraints.py -q`. Test đỏ vì **khác tên bảng / tên cột** thì không tính là lỗi thiết kế: đọc schema và đánh giá thủ công theo từng ý của test. Test đỏ vì **thiếu ràng buộc** thì là phát hiện thật. Soát thêm: có file ERD trong `docs/` (DoD 1). |
 | 0.5 (Mock Data) | ≥ 2 tenant, mỗi tenant 2–3 tài liệu có nội dung; có file rỗng 0 byte; có tài liệu 2 phiên bản với mã băm khác nhau; có 3–5 câu hỏi kiểm thử kèm đáp án, trong đó ≥ 1 câu bẫy rò rỉ giữa các tenant. |
+| 0.6 (Mở rộng corpus) | Đếm tài liệu và số từ theo từng tenant; kiểm tra có ≥ 2 cấp tiêu đề. Xác nhận bẫy làm sạch còn nguyên **trong repo**, không chỉ trên máy học viên: tìm byte BOM (`EF BB BF`), CRLF, ký tự U+200B, và chuỗi NFD (`unicodedata.is_normalized('NFC', s)` trả `False`). Với file câu hỏi: ≥ 20 câu, đủ số câu `leak` / `no_answer`, và viết script nhỏ xác nhận mọi `source_quote` thật sự có trong `source_file`. |
+| 1.0 (Khung dự án) | Clone sạch sang thư mục tạm, tạo venv mới, `pip install -e .` rồi `python -c "import docflow"` từ thư mục khác. Xóa một biến bắt buộc khỏi môi trường và chạy: phải báo lỗi rõ ràng ngay lúc khởi động. Soát code: không có `print` thay log, không có DSN hay mật khẩu ghi cứng (`grep -rn "localhost\|password" src/`). |
+| 1.1 (Client MinIO) | Đưa vào hàm phân loại object của học viên các key xấu: file ở gốc bucket, `../`, tenant viết hoa, tenant lạ, file 0 byte, đuôi `.pdf`. Mỗi key phải bị loại kèm lý do và không làm dừng cả lần quét. Có MinIO thì chạy thật trên bucket `raw-documents`. |
+| 1.2 (Làm sạch văn bản) | Chạy hàm làm sạch trên toàn bộ corpus Task 0.6, kiểm tra 3 tính chất: kết quả ở dạng NFC; `clean(clean(x)) == clean(x)`; số dòng tiêu đề Markdown trước và sau làm sạch bằng nhau. Thử thêm một file không phải UTF-8: phải bị bỏ qua có log, không làm dừng cả lô. |
 | Task chưa có trong bảng | Tự thiết kế 2–3 phép thử chạy được, bám sát từng tiêu chí DoD của task. Ghi rõ đã chạy lệnh gì. |
 
 Làm xong thì dọn: `git worktree remove ../review-pr-<PR> && git branch -D review/pr-<PR>`.
 
 ## Bước 4: Quy trình
 
-- Tên nhánh có đúng dạng `week-XX/task-X.Y-...` không.
+- Tên nhánh có đúng dạng `sprint-XX/task-X.Y-...` không.
 - Commit message có theo Conventional Commits không.
 - `roadmap/weekly_tracker.md` đã đổi trạng thái task thành `Sẵn sàng Review` và có link PR chưa.
 - Mô tả PR có điền đủ các mục của mẫu không.
@@ -82,7 +86,7 @@ Trình bày cho mentor theo đúng khung sau:
 
 ```markdown
 ## Kết luận review PR #<số>: <ĐẠT | ĐẠT KÈM GHI CHÚ | CẦN SỬA>
-Task: <X.Y> · Commit: <sha ngắn> · CI: hygiene <✅/❌> · schema <✅/❌> · secrets <✅/❌>
+Task: <X.Y> · Commit: <sha ngắn> · CI: hygiene <✅/❌> · schema <✅/❌> · unit <✅/❌> · secrets <✅/❌>
 
 ### Definition of Done
 | # | Tiêu chí | Kết quả | Bằng chứng |
