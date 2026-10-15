@@ -31,8 +31,23 @@ Bảng này là không gian trao đổi và ghi nhận tiến độ học tập 
 | **Tuần 3** | Task 1.2 | Xử lý chuỗi & Làm sạch văn bản (Clean text, Unicode NFC) | `Chưa bắt đầu` | | |
 | **Tuần 4** | Task 1.3 | Kỹ thuật cắt đoạn (Chunking) & Đính kèm Metadata | `Chưa bắt đầu` | | |
 | **Tuần 4** | Task 1.4 | Nạp dữ liệu bất biến (Idempotent) qua mã băm SHA-256 | `Chưa bắt đầu` | | |
-| **Tuần 5** | Task 1.5 | Database Writer & Xử lý phiên bản tài liệu (Versioning) | `Chưa bắt đầu` | | |
+| **Tuần 5** | Task 1.5 | Database Writer: Kết nối & ghi dữ liệu vào PostgreSQL | `Chưa bắt đầu` | | |
+| **Tuần 5** | Task 1.6 | Xử lý phiên bản tài liệu (Versioning — SCD Type 2) | `Chưa bắt đầu` | | |
 | **Tuần 6** | Task 2.1 | Tạo Vector Embedding với mô hình chạy local (CPU) | `Chưa bắt đầu` | | |
 | **Tuần 6** | Task 2.2 | Lưu trữ Vector & Truy vấn Cosine Distance trong pgvector | `Chưa bắt đầu` | | |
 | **Tuần 7** | Task 2.3 | Xây dựng hàm tìm kiếm ngữ nghĩa theo từng doanh nghiệp | `Chưa bắt đầu` | | |
 | **Tuần 7** | Task 2.4 | Đo lường chất lượng tìm kiếm bằng chỉ số Recall@k | `Chưa bắt đầu` | | |
+| **Tuần 8** | Task 3.1 | Giao diện Chat/Search demo bằng Streamlit | `Chưa bắt đầu` | | |
+| **Tuần 8** | Task 3.2 | Ghi log sự kiện truy vấn vào bảng `query_events` | `Chưa bắt đầu` | | |
+| **Tuần 9–10** | Task 4.1 | Dựng Airflow (LocalExecutor) trên Docker | `Chưa bắt đầu` | | |
+| **Tuần 9–10** | Task 4.2 | Viết DAG tự động hóa toàn bộ luồng nạp dữ liệu | `Chưa bắt đầu` | | |
+| **Tuần 9–10** | Task 4.3 | Cơ chế Retry & Alert khi gặp file lỗi | `Chưa bắt đầu` | | |
+| **Tuần 11–12** | Task 5.1 | Cài đặt dbt-core kết nối PostgreSQL | `Chưa bắt đầu` | | |
+| **Tuần 11–12** | Task 5.2 | Xây dựng Data Mart từ `query_events` (dim/fct/agg) | `Chưa bắt đầu` | | |
+| **Tuần 11–12** | Task 5.3 | Viết dbt tests (`unique`, `not_null`, `accepted_values`) | `Chưa bắt đầu` | | |
+| **Tuần 13** | Task 5.4 | Dashboard phân tích vận hành từ các bảng dbt | `Chưa bắt đầu` | | |
+| **Tuần 14–15** | Task 6.1 | Row Level Security & test cách ly Tenant | `Chưa bắt đầu` | | |
+| **Tuần 14–15** | Task 6.2 | PII Masking trong log câu hỏi | `Chưa bắt đầu` | | |
+| **Tuần 14–15** | Task 6.3 | Data Retention: dọn dẹp/archive log cũ | `Chưa bắt đầu` | | |
+| **Tuần 16** | Task 7.1 | CI/CD với GitHub Actions (`pytest`, `dbt test`) | `Chưa bắt đầu` | | |
+| **Tuần 16** | Task 7.2 | Hoàn thiện README, kiến trúc & video demo | `Chưa bắt đầu` | | |
