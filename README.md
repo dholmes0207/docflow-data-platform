@@ -40,6 +40,7 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 ```text
 docflow-data-platform/
 ├── README.md                 # Giới thiệu bài toán & hướng dẫn chung
+├── .github/                  # CODEOWNERS & mẫu mô tả Pull Request
 ├── roadmap/
 │   ├── overview.md           # Lộ trình tổng thể dự án
 │   └── weekly_tracker.md     # Bảng theo dõi tiến độ review hàng tuần
@@ -51,6 +52,9 @@ docflow-data-platform/
 │   ├── .env.example          # Mẫu biến môi trường (copy thành .env, không commit .env)
 │   └── sql/init.sql
 ├── sample_data/              # Dữ liệu tài liệu giả lập phục vụ kiểm thử
+│   ├── tenant_retail/        # Doanh nghiệp bán lẻ (có 1 file rỗng làm bẫy)
+│   ├── tenant_tech/          # Doanh nghiệp công nghệ
+│   └── updates/              # Phiên bản sửa đổi của tài liệu (kiểm thử Versioning)
 └── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
 ```
 
