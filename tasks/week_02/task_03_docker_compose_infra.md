@@ -55,7 +55,7 @@ Một file compose chuẩn thường bao gồm các khối chính:
     - Chuyển tiếp cổng (thường là `"5432:5432"`).
     - Ánh xạ thư mục dữ liệu nội bộ của Postgres (`/var/lib/postgresql/data`) vào một Docker Volume để không bị mất dữ liệu.
   - **`minio`:**
-    - Sử dụng image chính thức từ MinIO.
+    - Sử dụng image chính thức từ MinIO, nên **ghim cố định tag phiên bản** (như file mẫu `minio/minio:RELEASE.2024-05-10T01-41-38Z`) thay vì dùng `latest`. Các bản MinIO Community phát hành sau đó đã lược bớt nhiều chức năng quản trị trên Web Console, nên dùng bản mới có thể không thao tác được như hướng dẫn.
     - Cần truyền lệnh chạy (command) chỉ định cả thư mục dữ liệu và cổng cho giao diện Console (ví dụ: `server /data --console-address ":9001"`).
     - Biến môi trường quản trị viên (root user & root password).
     - Chuyển tiếp 2 cổng ra máy host: cổng 9000 (API) và cổng 9001 (Web UI).
@@ -66,7 +66,7 @@ Một file compose chuẩn thường bao gồm các khối chính:
 ### 2. Các Lệnh Thao Tác Thường Dùng Với Docker Compose
 - Chuẩn bị biến môi trường (chỉ làm 1 lần): copy file mẫu `infra/.env.example` thành `infra/.env` rồi đổi mật khẩu. File compose mẫu đọc mật khẩu từ `.env` thay vì ghi cứng trong YAML, và `.env` đã được đưa vào `.gitignore` để không lộ mật khẩu lên Git.
 - Khởi động cụm dịch vụ và cho chạy ngầm: `docker compose up -d`
-- Xem trạng thái các container đang chạy: `docker compose ps`
+- Xem trạng thái các container đang chạy: `docker compose ps` (file mẫu có cấu hình `healthcheck` cho Postgres: khi cột STATUS hiện `healthy` nghĩa là database đã sẵn sàng nhận kết nối)
 - Xem log hiển thị của các dịch vụ để debug khi gặp lỗi: `docker compose logs -f` (hoặc chỉ định tên dịch vụ: `docker compose logs -f postgres`)
 - Dừng toàn bộ dịch vụ một cách an toàn: `docker compose down`
 

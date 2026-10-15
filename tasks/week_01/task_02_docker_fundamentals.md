@@ -21,7 +21,7 @@ Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
 - **Docker Image vs Container:** Phân biệt "bản vẽ/khuôn mẫu" (Image) và "ngôi nhà/thể hiện thực tế đang chạy" (Container).
 - **WSL 2 Backend trong Docker Desktop:** Cơ chế Docker Desktop chạy một Linux VM nhẹ bên trong WSL để chia sẻ daemon trực tiếp với các bản phân phối Linux như Ubuntu.
 - **Port Mapping (`-p host_port:container_port`):** Tại sao ứng dụng chạy bên trong một container bị cô lập mạng lại có thể truy cập được từ trình duyệt bên ngoài máy Windows?
-- **Tài nguyên bộ nhớ WSL2:** Cách Windows cấp phát động RAM cho máy ảo vEthernet/WSL và lý do cần đặt giới hạn thông qua `.wslconfig`.
+- **Tài nguyên bộ nhớ WSL2:** Cách Windows cấp phát động RAM cho máy ảo nhẹ của WSL2 (hiển thị là tiến trình `Vmmem` / `VmmemWSL` trong Task Manager) và lý do cần đặt giới hạn thông qua `.wslconfig`.
 
 ### 2. Từ Khóa Tra Cứu (Search Keywords)
 - `docker desktop install windows 11 wsl2 integration`
