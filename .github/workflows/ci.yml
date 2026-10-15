@@ -1,6 +1,7 @@
 # CI chạy trên mọi Pull Request và mỗi lần main thay đổi.
 # 4 job dưới đây là 4 "check" bắt buộc phải xanh trước khi mentor merge (cấu hình trong ruleset của main).
 # Cách chạy từng job trên máy bạn: xem CONTRIBUTING.md, mục "Kiểm tra tự động".
+# Mọi job ghim ubuntu-24.04 (khớp WSL Ubuntu 24.04 của học viên); không dùng ubuntu-latest vì nhãn này tự đổi phiên bản.
 name: ci
 
 on:
@@ -14,7 +15,7 @@ permissions:
 jobs:
   # Cấu trúc repo, tài liệu task, tracker, dữ liệu mẫu, file bị cấm, lint/format Python, cú pháp compose.
   hygiene:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v9.0.0
@@ -35,7 +36,7 @@ jobs:
 
   # Chạy infra/sql/init.sql trên Postgres + pgvector thật và thử từng ràng buộc.
   schema:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -71,7 +72,7 @@ jobs:
   # Chưa có pyproject.toml thì bỏ qua (xanh); đã có pyproject.toml mà không có test nào thì pytest báo đỏ.
   # Có sẵn Postgres + pgvector: DATABASE_URL là tài khoản quản trị để test tích hợp tự dựng database, schema và role.
   unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -101,7 +102,7 @@ jobs:
 
   # Quét mật khẩu / API key / token trong toàn bộ lịch sử Git.
   secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with:
