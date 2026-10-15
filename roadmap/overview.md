@@ -45,8 +45,8 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 > 🏖️ **Nghỉ thi học kỳ 1 & Tết Dương lịch (28/12/2026 – 10/01/2027):** không giao task mới. Dùng để ôn thi, hoặc làm nốt phần còn dở nếu có thời gian.
 
 ### Sprint 5 (11/01 – 24/01/2027): Semantic Chunking & Idempotent Ingestion
-- **Task 1.3:** Thiết kế thuật toán cắt đoạn (Chunking Strategy: Recursive Character Splitter với overlap 15-20%), đính kèm Metadata (`tenant_id`, `chunk_index`, tiêu đề mục chứa đoạn).
-- **Task 1.4:** Tính mã băm nội dung (SHA-256) **sau khi đã chuẩn hóa ở Task 1.2** và thiết kế logic nạp Idempotent (chạy lại nhiều lần không trùng dữ liệu).
+- [Task 1.3: Cắt đoạn văn bản (Chunking) với overlap 15–20% & đính kèm metadata (tenant, vị trí, tiêu đề mục)](../tasks/week_05/task_10_chunking.md)
+- [Task 1.4: Mã băm SHA-256 trên văn bản đã chuẩn hóa & logic nạp Idempotent (NEW / UNCHANGED / CHANGED)](../tasks/week_05/task_11_idempotent_ingestion.md)
 
 > 🧘 **Tuần đệm (25/01 – 31/01/2027):** làm nốt task còn dở của Sprint 1–5. Không có task mới.
 >
