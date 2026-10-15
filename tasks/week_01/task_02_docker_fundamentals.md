@@ -1,6 +1,6 @@
 # Task 0.2: Làm Quen Với Docker & Thiết Lập Cấu Hình Tối Ưu RAM Trên Windows 11
 
-- **Giai đoạn:** Tuần 1 — Nền móng môi trường
+- **Giai đoạn:** Sprint 1 — Nền móng môi trường
 - **Mục tiêu:** Hiểu bản chất của công nghệ đóng gói (Containerization), cài đặt Docker Desktop tích hợp với WSL2 và cấu hình giới hạn tài nguyên hợp lý để máy tính 16GB RAM hoạt động mượt mà.
 
 ---

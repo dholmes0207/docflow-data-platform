@@ -22,7 +22,7 @@ dưới đây **được máy kiểm tra tự động**, không phụ thuộc v�
 - **Tên nhánh:** `sprint-XX/task-X.Y-mo-ta-ngan`, ví dụ `sprint-02/task-0.3-docker-compose`.
 - **Commit message:** theo dạng [Conventional Commits](https://www.conventionalcommits.org/):
   `<loại>(<phạm vi>): <mô tả ngắn>`, ví dụ `feat(infra): thêm healthcheck cho minio`,
-  `docs(tracker): cập nhật tiến độ tuần 2`. Các loại hay dùng: `feat`, `fix`, `docs`, `test`, `chore`.
+  `docs(tracker): cập nhật tiến độ sprint 2`. Các loại hay dùng: `feat`, `fix`, `docs`, `test`, `chore`.
 - **Mỗi PR gói gọn 1 task** (hoặc các task nhỏ cùng một sprint). Điền đầy đủ mẫu mô tả PR tự hiện ra
   khi tạo PR, đặc biệt mục **Bằng chứng theo Definition of Done**.
 

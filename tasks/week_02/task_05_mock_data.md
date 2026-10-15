@@ -1,6 +1,6 @@
 # Task 0.5: Xây Dựng Bộ Dữ Liệu Thử Nghiệm & Các Trường Hợp Biên (Mock Data & Edge Cases)
 
-- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
+- **Giai đoạn:** Sprint 2 — Hạ tầng & Mô hình dữ liệu
 - **Mục tiêu:** Hiểu tầm quan trọng của việc chuẩn bị dữ liệu kiểm thử (Test Data) trong Data Engineering; tự tay tạo bộ tài liệu giả lập cho 2 doanh nghiệp kèm các "bẫy" có chủ đích để kiểm tra độ tin cậy của pipeline xử lý sau này.
 
 ---
@@ -54,7 +54,7 @@ Bạn có thể tự do sáng tạo nội dung văn bản liên quan đến các
 
 *(Bạn có thể tham khảo một số nội dung văn bản mẫu có sẵn trong thư mục [`sample_data/`](../../sample_data/) của repo để lấy ý tưởng).*
 
-**Gợi ý cho trường hợp "tài liệu có 2 phiên bản":** Thư mục [`sample_data/updates/`](../../sample_data/updates/) chứa bản sửa đổi (phiên bản 2) của `tenant_retail/quy_che_doi_tra.md`. Ban đầu bạn chỉ tải phiên bản 1 lên MinIO. Đến khi kiểm thử tính năng Versioning (Tuần 5), hãy tải phiên bản 2 lên **đè đúng object key cũ** (`tenant_retail/quy_che_doi_tra.md`) để giả lập việc nhân viên sửa và tải lại tài liệu.
+**Gợi ý cho trường hợp "tài liệu có 2 phiên bản":** Thư mục [`sample_data/updates/`](../../sample_data/updates/) chứa bản sửa đổi (phiên bản 2) của `tenant_retail/quy_che_doi_tra.md`. Ban đầu bạn chỉ tải phiên bản 1 lên MinIO. Đến khi kiểm thử tính năng Versioning (Sprint 6), hãy tải phiên bản 2 lên **đè đúng object key cũ** (`tenant_retail/quy_che_doi_tra.md`) để giả lập việc nhân viên sửa và tải lại tài liệu.
 
 ### 2. Thao Tác Đưa Dữ Liệu Lên MinIO
 - Mở MinIO Console trên trình duyệt (`http://localhost:9001`) và đăng nhập bằng tài khoản root đã cấu hình trong file `.env`.
@@ -64,7 +64,7 @@ Bạn có thể tự do sáng tạo nội dung văn bản liên quan đến các
 - Kiểm tra danh sách đường dẫn hiển thị trên MinIO để đảm bảo tên tenant luôn nằm ở đầu đường dẫn file (ví dụ: `tenant_retail/quy_che_doi_tra.md`).
 
 ### 3. Chuẩn Bị Câu Hỏi Kiểm Thử Nghiệp Vụ (Ground Truth Questions)
-Sau khi có dữ liệu, hãy ghi chú lại khoảng 3–5 câu hỏi kèm đáp án mong muốn để sau này dùng cho task kiểm thử tìm kiếm ở Tuần 7:
+Sau khi có dữ liệu, hãy ghi chú lại khoảng 3–5 câu hỏi kèm đáp án mong muốn để sau này dùng cho task kiểm thử tìm kiếm ở Sprint 8 (Sprint 3 sẽ mở rộng thành bộ đầy đủ):
 - *Ví dụ 1 (Câu hỏi bình thường):* "Khách hàng được đổi trả sản phẩm trong bao nhiêu ngày?" -> Kỳ vọng tìm thấy đoạn văn trong file của `tenant_retail`.
 - *Ví dụ 2 (Câu hỏi bẫy rò rỉ dữ liệu):* Đứng ở quyền `tenant_tech` và hỏi: "Tỷ lệ hoa hồng doanh số trên 100 triệu là bao nhiêu?" -> Kỳ vọng hệ thống trả về: *Không tìm thấy thông tin* (bởi vì thông tin này chỉ thuộc về `tenant_retail`).
 
