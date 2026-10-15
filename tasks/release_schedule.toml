@@ -41,3 +41,11 @@ tasks = [
   { id = "1.5", path = "tasks/week_06/task_12_db_writer.md", title = "Ghi dữ liệu vào PostgreSQL & tách quyền database (`docflow_owner` / `docflow_app`)" },
   { id = "1.6", path = "tasks/week_06/task_13_scd2_versioning.md", title = "Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of)" },
 ]
+
+[[sprint]]
+number = 7
+release = 2027-02-22
+tasks = [
+  { id = "2.1", path = "tasks/week_07/task_14_embedding.md", title = "Vector embedding đa ngôn ngữ chạy cục bộ trên CPU (`paraphrase-multilingual-MiniLM-L12-v2` / `multilingual-e5-small`, 384 chiều)" },
+  { id = "2.2", path = "tasks/week_07/task_15_vector_storage_cache.md", title = "Lưu vector vào pgvector & bộ nhớ đệm embedding theo mã băm chunk và phiên bản mô hình" },
+]

@@ -58,8 +58,8 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - [Task 1.6: Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of)](../tasks/week_06/task_13_scd2_versioning.md)
 
 ### Sprint 7 (01/03 – 14/03/2027): Local Vector Embedding & pgvector Storage
-- **Task 2.1:** Tích hợp mô hình nhúng chạy cục bộ **hỗ trợ tiếng Việt**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` hoặc `intfloat/multilingual-e5-small` (đều sinh vector **384 chiều**, chạy trên CPU, chi phí $0). *Không dùng `all-MiniLM-L6-v2`: mô hình này chỉ được huấn luyện trên tiếng Anh, sẽ cho kết quả kém với tài liệu tiếng Việt.*
-- **Task 2.2:** Lưu vector vào bảng `document_chunks`, kèm **mã băm nội dung từng chunk** làm khóa bộ nhớ đệm (cache), để chunk không đổi thì không phải tính lại embedding.
+- [Task 2.1: Vector embedding đa ngôn ngữ chạy cục bộ trên CPU (`paraphrase-multilingual-MiniLM-L12-v2` / `multilingual-e5-small`, 384 chiều)](../tasks/week_07/task_14_embedding.md)
+- [Task 2.2: Lưu vector vào pgvector & bộ nhớ đệm embedding theo mã băm chunk và phiên bản mô hình](../tasks/week_07/task_15_vector_storage_cache.md)
 
 ### Sprint 8 (15/03 – 28/03/2027): Multi-tenant Semantic Search & Đánh Giá
 - **Task 2.3:** Viết hàm tìm kiếm ngữ nghĩa `search(query, tenant_id, top_k)` dùng Cosine Distance (`<=>`), bắt buộc cách ly dữ liệu theo tenant. Tìm hiểu vì sao lọc `WHERE tenant_id = ...` kết hợp index HNSW có thể trả về **ít hơn `top_k`** kết quả (từ khóa: `pgvector filtering iterative index scans`).
