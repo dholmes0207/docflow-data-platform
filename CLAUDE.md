@@ -1,7 +1,8 @@
 # CLAUDE.md
 
 Repo đào tạo Data Engineering "DocFlow": nền tảng dữ liệu cho trợ lý AI đa doanh nghiệp (multi-tenant RAG).
-Mentor là chủ repo (`@dholmes0207`); học viên làm bài theo `tasks/`, nộp qua Pull Request cuối mỗi sprint (2 tuần).
+Mentor là chủ repo (`@dholmes0207`); học viên là AZIST (`@thanhtrido12`), có quyền Write, làm bài theo `tasks/` trên
+Windows + WSL2 Ubuntu 24.04 (Python 3.12), nộp qua Pull Request cuối mỗi sprint (2 tuần, lịch 02/11/2026 – 30/05/2027).
 
 ## Quy tắc bắt buộc
 

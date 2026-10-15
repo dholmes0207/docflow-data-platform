@@ -27,7 +27,7 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 
 ## 🧭 Cơ Chế Theo Dõi Tiến Độ Theo Sprint
 
-- **Lịch học:** từ 19/10/2026 đến cuối tháng 05/2027, chia thành 14 sprint (mỗi sprint 2 tuần), đã trừ các đợt thi và nghỉ Tết. Lịch chi tiết: [`roadmap/overview.md`](roadmap/overview.md).
+- **Lịch học:** từ 02/11/2026 đến 30/05/2027, chia thành 13 sprint (mỗi sprint 2 tuần), đã trừ các đợt thi và nghỉ Tết. Lịch chi tiết: [`roadmap/overview.md`](roadmap/overview.md).
 - **Tần suất review:** Cuối mỗi sprint, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
 - **Cách thức:**
   1. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).

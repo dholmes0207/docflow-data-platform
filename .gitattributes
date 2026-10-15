@@ -1,0 +1,7 @@
+# Chuẩn hóa xuống dòng: mọi file văn bản lưu trong repo dùng LF (kiểu Linux),
+# kể cả khi được sửa trên Windows. Tránh lỗi "file bị sửa dù không đụng tới" và mã băm thay đổi.
+* text=auto eol=lf
+
+# Dữ liệu mẫu chứa bẫy có chủ đích (CRLF, BOM, ký tự lạ — Task 0.6):
+# Git KHÔNG được tự chuyển đổi xuống dòng của các file này.
+sample_data/** -text

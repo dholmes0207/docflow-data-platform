@@ -1,7 +1,7 @@
 # Task 1.0: Khung Dự Án Python & Quy Ước Code
 
 - **Giai đoạn:** Sprint 3 — Khung dự án & bộ dữ liệu thật sự
-- **Mục tiêu:** Từ Sprint 4 bạn bắt đầu viết code pipeline thật. Trước khi viết dòng code nghiệp vụ đầu tiên, hãy dựng một "bộ khung" đúng chuẩn: code đặt ở đâu, cấu hình đọc từ đâu, log ghi thế nào, test chạy ra sao. Bộ khung tốt giúp 14 sprint sau không phải đập đi làm lại.
+- **Mục tiêu:** Từ Sprint 4 bạn bắt đầu viết code pipeline thật. Trước khi viết dòng code nghiệp vụ đầu tiên, hãy dựng một "bộ khung" đúng chuẩn: code đặt ở đâu, cấu hình đọc từ đâu, log ghi thế nào, test chạy ra sao. Bộ khung tốt giúp các sprint sau không phải đập đi làm lại.
 
 ---
 

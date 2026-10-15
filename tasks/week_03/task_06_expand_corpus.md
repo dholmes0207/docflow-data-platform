@@ -63,7 +63,7 @@ Bạn tự chọn định dạng (`.csv`, `.yaml` hoặc `.jsonl`), miễn là m
 - `type`: `normal` / `leak` / `no_answer`
 
 ### 3. Những Vấn Đề Thường Gặp
-- **Git hoặc trình soạn thảo tự "sửa" bẫy của bạn:** Một số trình soạn thảo tự xóa khoảng trắng cuối dòng, tự đổi CRLF thành LF, hoặc tự xóa BOM khi lưu. Sau khi commit, hãy kiểm tra lại file trong repo (ví dụ dùng `file <tên file>` hoặc `hexdump -C <tên file> | head`) xem bẫy còn nguyên không. Nếu Git tự đổi xuống dòng, tìm hiểu từ khóa `gitattributes eol binary`.
+- **Git hoặc trình soạn thảo tự "sửa" bẫy của bạn:** Một số trình soạn thảo tự xóa khoảng trắng cuối dòng, tự đổi CRLF thành LF, hoặc tự xóa BOM khi lưu. Sau khi commit, hãy kiểm tra lại file trong repo (ví dụ dùng `file <tên file>` hoặc `hexdump -C <tên file> | head`) xem bẫy còn nguyên không. Repo đã cấu hình `.gitattributes` để Git **không** tự đổi xuống dòng của mọi file trong `sample_data/`, nên nếu bẫy vẫn mất thì thủ phạm là trình soạn thảo (xem cấu hình "files.eol" và "files.trimTrailingWhitespace" của VS Code).
 - **Đoạn trích trong bộ câu hỏi không khớp tài liệu:** Thường do bạn sửa tài liệu sau khi đã viết câu hỏi. Có thể viết một script nhỏ kiểm tra mọi `source_quote` đều xuất hiện trong `source_file` tương ứng.
 
 </details>
