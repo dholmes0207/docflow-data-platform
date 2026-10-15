@@ -1,0 +1,6 @@
+# Công cụ kiểm tra chất lượng repo (không phải thư viện của pipeline).
+# Cài: pip install -r requirements-dev.txt
+pytest>=8,<10
+psycopg[binary]>=3.2,<4
+ruff==0.16.8  # ghim cố định: pre-commit và CI phải format giống hệt nhau
+pre-commit>=4,<5

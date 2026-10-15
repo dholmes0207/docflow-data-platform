@@ -47,3 +47,7 @@ postgres_data/
 
 # Logs
 *.log
+
+# Cache của công cụ kiểm tra
+.pytest_cache/
+.ruff_cache/

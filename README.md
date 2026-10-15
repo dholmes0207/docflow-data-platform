@@ -30,8 +30,10 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 - **Tần suất review:** Mỗi tuần một lần, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
 - **Cách thức:**
   1. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
-  2. Tạo Pull Request (PR) cho những nội dung đã làm trong tuần.
+  2. Tạo Pull Request (PR) cho những nội dung đã làm trong tuần. CI sẽ tự kiểm tra PR, cần xanh trước khi review.
   3. Trong buổi review, bạn sẽ demo nhanh kết quả hoặc giải thích cách bạn đã giải quyết bài toán theo tiêu chí của task.
+
+> 📏 **Trước khi bắt đầu, hãy đọc [`CONTRIBUTING.md`](CONTRIBUTING.md)**: quy tắc đặt tên nhánh, commit, các file bị cấm, các kiểm tra tự động (pre-commit, CI) và quy trình review hằng tuần.
 
 ---
 
@@ -40,7 +42,9 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 ```text
 docflow-data-platform/
 ├── README.md                 # Giới thiệu bài toán & hướng dẫn chung
-├── .github/                  # CODEOWNERS & mẫu mô tả Pull Request
+├── CONTRIBUTING.md           # Quy tắc làm việc: nhánh, commit, file bị cấm, CI, quy trình review
+├── .github/                  # CODEOWNERS, mẫu mô tả PR, CI (workflows/ci.yml)
+├── .claude/skills/           # Skill /review-week cho mentor review PR bằng Claude Code
 ├── roadmap/
 │   ├── overview.md           # Lộ trình tổng thể dự án
 │   └── weekly_tracker.md     # Bảng theo dõi tiến độ review hàng tuần
@@ -55,6 +59,8 @@ docflow-data-platform/
 │   ├── tenant_retail/        # Doanh nghiệp bán lẻ (có 1 file rỗng làm bẫy)
 │   ├── tenant_tech/          # Doanh nghiệp công nghệ
 │   └── updates/              # Phiên bản sửa đổi của tài liệu (kiểm thử Versioning)
+├── tests/gates/              # Gate test do mentor đặt ra (CI chạy trên mọi PR, không được sửa để lách)
+├── scripts/                  # Script kiểm tra dùng chung cho pre-commit và CI
 └── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
 ```
 

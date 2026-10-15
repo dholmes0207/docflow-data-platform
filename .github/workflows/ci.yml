@@ -1,0 +1,74 @@
+# CI chạy trên mọi Pull Request và mỗi lần main thay đổi.
+# 3 job dưới đây là 3 "check" bắt buộc phải xanh trước khi mentor merge (cấu hình trong ruleset của main).
+# Cách chạy từng job trên máy bạn: xem CONTRIBUTING.md, mục "Kiểm tra tự động".
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # Cấu trúc repo, tài liệu task, tracker, dữ liệu mẫu, file bị cấm, lint/format Python, cú pháp compose.
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9.0.0
+      - name: Cài công cụ kiểm tra
+        run: uv venv --python 3.12 && uv pip install -r requirements-dev.txt
+      - name: File bị cấm
+        run: .venv/bin/python scripts/check_forbidden_files.py --all
+      - name: Ruff lint
+        run: .venv/bin/ruff check .
+      - name: Ruff format
+        run: .venv/bin/ruff format --check .
+      - name: Docker Compose hợp lệ với .env.example
+        run: |
+          cp infra/.env.example infra/.env
+          docker compose -f infra/docker-compose.yml config --quiet
+      - name: Gate test cấu trúc repo
+        run: .venv/bin/pytest tests/gates/test_repo_hygiene.py -q
+
+  # Chạy infra/sql/init.sql trên Postgres + pgvector thật và thử từng ràng buộc.
+  schema:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      # Không có database thì ĐỎ, không được "xanh giả" bằng skip
+      REQUIRE_DB: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9.0.0
+      - name: Cài công cụ kiểm tra
+        run: uv venv --python 3.12 && uv pip install -r requirements-dev.txt
+      - name: Gate test schema
+        run: .venv/bin/pytest tests/gates/test_schema_constraints.py -q
+
+  # Quét mật khẩu / API key / token trong toàn bộ lịch sử Git.
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz \
+            | tar xz gitleaks
+          ./gitleaks git . --no-banner --redact

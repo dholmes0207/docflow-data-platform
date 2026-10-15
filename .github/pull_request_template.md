@@ -17,5 +17,8 @@
 -
 
 ## Checklist
-- [ ] Đã cập nhật trạng thái và link PR trong `roadmap/weekly_tracker.md`
+- [ ] Tên nhánh dạng `week-XX/task-X.Y-mo-ta-ngan`
+- [ ] CI xanh cả 3 check: `hygiene`, `schema`, `secrets`
+- [ ] Không sửa, xóa hay `skip` test trong `tests/gates/`
+- [ ] Đã đổi trạng thái task thành `Sẵn sàng Review` và dán link PR trong `roadmap/weekly_tracker.md`
 - [ ] Không commit file `.env`, mật khẩu hay dữ liệu thật

@@ -1,0 +1,28 @@
+# Kiểm tra chạy tự động mỗi lần `git commit` trên máy bạn (cài 1 lần: xem CONTRIBUTING.md).
+# Đây là bản "chạy sớm" của các kiểm tra trong CI (.github/workflows/ci.yml): lỗi bị bắt ngay
+# trên máy thay vì phải đợi CI đỏ.
+repos:
+  # Chặn commit mật khẩu, API key, token...
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      # Chặn .env, PDF/Office/zip ngoài docs/, file > 1 MB (CONTRIBUTING.md, mục "File bị cấm")
+      - id: forbidden-files
+        name: forbidden files
+        entry: python3 scripts/check_forbidden_files.py
+        language: system
+      # Dùng đúng bản ruff ghim trong requirements-dev.txt để khớp 100% với CI
+      - id: ruff
+        name: ruff lint
+        entry: ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
