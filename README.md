@@ -25,15 +25,16 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 
 ---
 
-## 🧭 Cơ Chế Theo Dõi Tiến Độ Hàng Tuần
+## 🧭 Cơ Chế Theo Dõi Tiến Độ Theo Sprint
 
-- **Tần suất review:** Mỗi tuần một lần, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
+- **Lịch học:** từ 19/10/2026 đến cuối tháng 05/2027, chia thành 14 sprint (mỗi sprint 2 tuần), đã trừ các đợt thi và nghỉ Tết. Lịch chi tiết: [`roadmap/overview.md`](roadmap/overview.md).
+- **Tần suất review:** Cuối mỗi sprint, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
 - **Cách thức:**
   1. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
-  2. Tạo Pull Request (PR) cho những nội dung đã làm trong tuần. CI sẽ tự kiểm tra PR, cần xanh trước khi review.
+  2. Tạo Pull Request (PR) cho những nội dung đã làm trong sprint. CI sẽ tự kiểm tra PR, cần xanh trước khi review.
   3. Trong buổi review, bạn sẽ demo nhanh kết quả hoặc giải thích cách bạn đã giải quyết bài toán theo tiêu chí của task.
 
-> 📏 **Trước khi bắt đầu, hãy đọc [`CONTRIBUTING.md`](CONTRIBUTING.md)**: quy tắc đặt tên nhánh, commit, các file bị cấm, các kiểm tra tự động (pre-commit, CI) và quy trình review hằng tuần.
+> 📏 **Trước khi bắt đầu, hãy đọc [`CONTRIBUTING.md`](CONTRIBUTING.md)**: quy tắc đặt tên nhánh, commit, các file bị cấm, các kiểm tra tự động (pre-commit, CI) và quy trình review mỗi sprint.
 
 ---
 
@@ -47,10 +48,12 @@ docflow-data-platform/
 ├── .claude/skills/           # Skill /review-week cho mentor review PR bằng Claude Code
 ├── roadmap/
 │   ├── overview.md           # Lộ trình tổng thể dự án
-│   └── weekly_tracker.md     # Bảng theo dõi tiến độ review hàng tuần
-├── tasks/                    # Danh sách các task chi tiết theo tuần
-│   ├── week_01/              # Tuần 1: Môi trường làm việc chuẩn (WSL2, Docker)
-│   └── week_02/              # Tuần 2: Hạ tầng lưu trữ, Database & Data Modeling
+│   └── weekly_tracker.md     # Bảng theo dõi tiến độ & hạn nộp từng task
+├── tasks/                    # Task chi tiết, thư mục week_XX = Sprint XX
+│   ├── week_01/              # Sprint 1: Môi trường làm việc chuẩn (WSL2, Docker)
+│   ├── week_02/              # Sprint 2: Hạ tầng lưu trữ, Database & Data Modeling
+│   ├── week_03/              # Sprint 3: Khung dự án Python & mở rộng bộ dữ liệu
+│   └── week_04/              # Sprint 4: Kết nối MinIO & làm sạch văn bản
 ├── infra/                    # Thư mục cấu hình hạ tầng mẫu (tham khảo)
 │   ├── docker-compose.yml
 │   ├── .env.example          # Mẫu biến môi trường (copy thành .env, không commit .env)
@@ -64,4 +67,4 @@ docflow-data-platform/
 └── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
 ```
 
-Hãy bắt đầu tuần đầu tiên tại thư mục [`tasks/week_01/`](tasks/week_01/) nhé! Chúc bạn có trải nghiệm học tập thú vị.
+Hãy bắt đầu Sprint 1 tại thư mục [`tasks/week_01/`](tasks/week_01/) nhé! Chúc bạn có trải nghiệm học tập thú vị.

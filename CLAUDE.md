@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Repo đào tạo Data Engineering "DocFlow": nền tảng dữ liệu cho trợ lý AI đa doanh nghiệp (multi-tenant RAG).
-Mentor là chủ repo (`@dholmes0207`); học viên làm bài theo `tasks/`, nộp qua Pull Request hằng tuần.
+Mentor là chủ repo (`@dholmes0207`); học viên làm bài theo `tasks/`, nộp qua Pull Request cuối mỗi sprint (2 tuần).
 
 ## Quy tắc bắt buộc
 
@@ -25,11 +25,11 @@ pre-commit run --all-files
 
 ## Bản đồ
 
-- `tasks/week_XX/`: đề bài từng task. Thêm task mới thì phải thêm cả link trong `roadmap/overview.md` và
+- `tasks/week_XX/`: đề bài từng task; thư mục `week_XX` tương ứng **Sprint XX** (sprint 2 tuần, lịch trong `roadmap/overview.md`). Thêm task mới thì phải thêm cả link trong `roadmap/overview.md` và
   dòng trong `roadmap/weekly_tracker.md` (gate test kiểm tra điều này).
 - `infra/`: hạ tầng mẫu (Docker Compose đọc mật khẩu từ `infra/.env`, schema `infra/sql/init.sql`).
 - `sample_data/`: dữ liệu mẫu có chủ đích chứa bẫy (file rỗng, tài liệu 2 phiên bản trong `updates/`).
-- `tests/gates/`: gate test do mentor đặt ra; CI (`.github/workflows/ci.yml`) chạy 3 check
-  `hygiene`, `schema`, `secrets`.
+- `tests/gates/`: gate test do mentor đặt ra; CI (`.github/workflows/ci.yml`) chạy 4 check
+  `hygiene`, `schema`, `unit` (test của học viên trong `tests/unit/`, code trong `src/docflow/`), `secrets`.
 - Quy tắc làm việc đầy đủ: `CONTRIBUTING.md`. Review PR học viên: skill `/review-week`
   (`.claude/skills/review-week/SKILL.md`).
