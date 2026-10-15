@@ -32,3 +32,12 @@ tasks = [
   { id = "1.3", path = "tasks/week_05/task_10_chunking.md", title = "Cắt đoạn văn bản (Chunking) với overlap 15–20% & đính kèm metadata (tenant, vị trí, tiêu đề mục)" },
   { id = "1.4", path = "tasks/week_05/task_11_idempotent_ingestion.md", title = "Mã băm SHA-256 trên văn bản đã chuẩn hóa & logic nạp Idempotent (NEW / UNCHANGED / CHANGED)" },
 ]
+
+# Sprint 6 bắt đầu 15/02/2027. Theo quy ước thì mở 08/02 (mùng 3 Tết), nên mở sớm vào đầu tuần đệm.
+[[sprint]]
+number = 6
+release = 2027-01-25
+tasks = [
+  { id = "1.5", path = "tasks/week_06/task_12_db_writer.md", title = "Ghi dữ liệu vào PostgreSQL & tách quyền database (`docflow_owner` / `docflow_app`)" },
+  { id = "1.6", path = "tasks/week_06/task_13_scd2_versioning.md", title = "Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of)" },
+]

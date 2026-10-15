@@ -48,7 +48,7 @@ CI có 4 check. Cả 4 phải **xanh** thì PR mới được merge.
 |---|---|---|
 | `hygiene` | File bị cấm, ruff lint/format, `docker-compose.yml` hợp lệ, tài liệu task có đủ mục, mọi task có trong roadmap và tracker, trạng thái tracker hợp lệ, link tương đối không hỏng, `.env.example` đủ biến, dữ liệu mẫu còn nguyên các bẫy | `pytest tests/gates/test_repo_hygiene.py` |
 | `schema` | Chạy `infra/sql/init.sql` (và `db/schema.sql` của bạn từ Task 0.4) 2 lần trên Postgres + pgvector, rồi thử ghi dữ liệu sai (chunk sai tenant, chunk trùng, 2 phiên bản cùng hiệu lực...) và khẳng định database từ chối | Xem bên dưới |
-| `unit` | Unit test của chính bạn (từ Task 1.0): cài dự án theo `pyproject.toml` rồi chạy mọi test trong `tests/` trừ `tests/gates/`. Chưa có `pyproject.toml` thì bỏ qua; đã có mà không có test nào thì đỏ | `pytest tests --ignore=tests/gates` |
+| `unit` | Unit test của chính bạn (từ Task 1.0): cài dự án theo `pyproject.toml` rồi chạy mọi test trong `tests/` trừ `tests/gates/`. Job có sẵn PostgreSQL + pgvector (biến `DATABASE_URL`, quyền quản trị) cho test tích hợp từ Task 1.5. Chưa có `pyproject.toml` thì bỏ qua; đã có mà không có test nào thì đỏ | `pytest tests --ignore=tests/gates` |
 | `secrets` | Quét mật khẩu / API key / token trong toàn bộ lịch sử Git (gitleaks) | `pre-commit run gitleaks --all-files` |
 
 Chạy test schema trên máy (cần cụm Docker Compose của Task 0.3 đang chạy):

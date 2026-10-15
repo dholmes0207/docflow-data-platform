@@ -54,8 +54,8 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 > 🧧 **Nghỉ Tết Nguyên Đán (01/02 – 14/02/2027, mùng 1 Tết: 06/02/2027).**
 
 ### Sprint 6 (15/02 – 28/02/2027): Database Writer & Versioning
-- **Task 1.5:** Viết module ghi PostgreSQL qua `psycopg` / `SQLAlchemy`. **Tách 2 role database:** `docflow_owner` (tạo và sở hữu bảng) và `docflow_app` (ứng dụng dùng hằng ngày, chỉ có quyền đọc/ghi dữ liệu). Superuser và chủ sở hữu bảng mặc định **bỏ qua Row Level Security**. Tách role từ bây giờ để đến Task 6.1 bật RLS là có tác dụng ngay.
-- **Task 1.6:** Xử lý file bị sửa nội dung theo kiểu **SCD Type 2**: viết migration bổ sung `valid_from` / `valid_to`, đóng phiên bản cũ (`is_active = FALSE`, `valid_to = now()`) và mở phiên bản mới trong **cùng một transaction**.
+- [Task 1.5: Ghi dữ liệu vào PostgreSQL & tách quyền database (`docflow_owner` / `docflow_app`)](../tasks/week_06/task_12_db_writer.md)
+- [Task 1.6: Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of)](../tasks/week_06/task_13_scd2_versioning.md)
 
 ### Sprint 7 (01/03 – 14/03/2027): Local Vector Embedding & pgvector Storage
 - **Task 2.1:** Tích hợp mô hình nhúng chạy cục bộ **hỗ trợ tiếng Việt**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` hoặc `intfloat/multilingual-e5-small` (đều sinh vector **384 chiều**, chạy trên CPU, chi phí $0). *Không dùng `all-MiniLM-L6-v2`: mô hình này chỉ được huấn luyện trên tiếng Anh, sẽ cho kết quả kém với tài liệu tiếng Việt.*
