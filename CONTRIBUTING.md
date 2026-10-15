@@ -48,7 +48,7 @@ CI có 4 check. Cả 4 phải **xanh** thì PR mới được merge.
 |---|---|---|
 | `hygiene` | File bị cấm, ruff lint/format, `docker-compose.yml` hợp lệ, tài liệu task có đủ mục, mọi task có trong roadmap và tracker, trạng thái tracker hợp lệ, link tương đối không hỏng, `.env.example` đủ biến, dữ liệu mẫu còn nguyên các bẫy | `pytest tests/gates/test_repo_hygiene.py` |
 | `schema` | Chạy `infra/sql/init.sql` (và `db/schema.sql` của bạn từ Task 0.4) 2 lần trên Postgres + pgvector, rồi thử ghi dữ liệu sai (chunk sai tenant, chunk trùng, 2 phiên bản cùng hiệu lực...) và khẳng định database từ chối | Xem bên dưới |
-| `unit` | Unit test của chính bạn (từ Task 1.0): cài dự án theo `pyproject.toml` rồi chạy mọi test trong `tests/` trừ `tests/gates/`. Chưa có `pyproject.toml` thì bỏ qua; đã có mà không có test nào thì đỏ | `pytest tests --ignore=tests/gates` |
+| `unit` | Unit test của chính bạn (từ Task 1.0): cài dự án theo `pyproject.toml` rồi chạy mọi test trong `tests/` trừ `tests/gates/`. Job có sẵn PostgreSQL + pgvector (biến `DATABASE_URL`, quyền quản trị) cho test tích hợp từ Task 1.5. Chưa có `pyproject.toml` thì bỏ qua; đã có mà không có test nào thì đỏ | `pytest tests --ignore=tests/gates` |
 | `secrets` | Quét mật khẩu / API key / token trong toàn bộ lịch sử Git (gitleaks) | `pre-commit run gitleaks --all-files` |
 
 Chạy test schema trên máy (cần cụm Docker Compose của Task 0.3 đang chạy):
@@ -85,7 +85,13 @@ Gate test là "hàng rào" do mentor đặt ra để giữ repo luôn đúng. Qu
 
 ---
 
-## 7. Quy trình review mỗi sprint (2 tuần)
+## 7. Task bị khóa (🔒)
+
+Task của các sprint sau được viết trước nhưng lưu ở dạng mã hóa trong `tasks/_locked/`, theo lịch ở
+`tasks/release_schedule.toml`. Mỗi sprint mở vào thứ Hai, 1 tuần trước khi sprint đó bắt đầu (roadmap ghi rõ ngày).
+Không sửa, xóa hay đổi tên các file trong `tasks/_locked/` và file lịch: CI (`hygiene`) sẽ báo đỏ.
+
+## 8. Quy trình review mỗi sprint (2 tuần)
 
 1. Làm task trên nhánh riêng → mở PR → điền mẫu mô tả PR.
 2. Đợi CI xanh. CI đỏ thì tự sửa trước, mentor chưa review PR đỏ.

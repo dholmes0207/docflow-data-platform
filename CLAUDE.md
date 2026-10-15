@@ -28,6 +28,12 @@ pre-commit run --all-files
 
 - `tasks/week_XX/`: đề bài từng task; thư mục `week_XX` tương ứng **Sprint XX** (sprint 2 tuần, lịch trong `roadmap/overview.md`). Thêm task mới thì phải thêm cả link trong `roadmap/overview.md` và
   dòng trong `roadmap/weekly_tracker.md` (gate test kiểm tra điều này).
+- **Task khóa theo lịch:** task của sprint chưa tới ngày nằm mã hóa (age) trong `tasks/_locked/`, lịch ở
+  `tasks/release_schedule.toml`, công cụ `scripts/task_release.py` (status / lock / release). Viết task mới cho sprint
+  tương lai: tạo file `.md` như thường, thêm link vào roadmap và dòng vào tracker, thêm vào lịch (`title` khớp chữ trong
+  roadmap, ngày mở là thứ Hai), rồi `python3 scripts/task_release.py lock --sprint N`. Khi merge PR có nội dung task
+  chưa tới ngày, dùng **squash merge** để bản chưa mã hóa không nằm trong lịch sử `main`. Không bao giờ commit khóa
+  bí mật `AGE-SECRET-KEY-...`; nó chỉ nằm trong secret của Environment `task-release`.
 - `infra/`: hạ tầng mẫu (Docker Compose đọc mật khẩu từ `infra/.env`, schema `infra/sql/init.sql`).
 - `sample_data/`: dữ liệu mẫu có chủ đích chứa bẫy (file rỗng, tài liệu 2 phiên bản trong `updates/`).
 - `tests/gates/`: gate test do mentor đặt ra; CI (`.github/workflows/ci.yml`) chạy 4 check

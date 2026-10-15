@@ -10,6 +10,7 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - **Giữa sprint:** tự cập nhật trạng thái trong tracker. Nếu bị tắc quá 2 buổi, nhắn mentor ngay, không đợi đến buổi review.
 - Thư mục `tasks/week_XX/` tương ứng với **Sprint XX** (ví dụ `tasks/week_03/` là Sprint 3).
 - Task được viết chi tiết trước 1–2 sprint (cuốn chiếu). Các sprint xa hơn chỉ có mô tả ngắn bên dưới và sẽ được bổ sung dần.
+- Task có biểu tượng 🔒 đã được viết xong nhưng **đang khóa**: nó tự mở vào thứ Hai ghi bên cạnh (1 tuần trước khi sprint bắt đầu). Bạn không cần làm gì, chỉ cần `git pull` sau ngày đó.
 - Lịch nghỉ dưới đây là **dự kiến**. Hãy báo mentor lịch thi thật của bạn để điều chỉnh sớm.
 
 ## 🎯 Các Mốc Kiểm Tra
@@ -35,30 +36,30 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - [Task 0.5: Chuẩn bị Mock Data & Edge Cases](../tasks/week_02/task_05_mock_data.md)
 
 ### Sprint 3 (30/11 – 13/12/2026): Khung Dự Án & Bộ Dữ Liệu Thật Sự
-- [Task 0.6: Mở rộng bộ dữ liệu (corpus) & bộ câu hỏi đánh giá](../tasks/week_03/task_06_expand_corpus.md)
-- [Task 1.0: Khung dự án Python & quy ước code](../tasks/week_03/task_07_project_skeleton.md)
+- 🔒 Task 0.6: Mở rộng bộ dữ liệu (corpus) & bộ câu hỏi đánh giá *(mở ngày 23/11/2026)*
+- 🔒 Task 1.0: Khung dự án Python & quy ước code *(mở ngày 23/11/2026)*
 
 ### Sprint 4 (14/12 – 27/12/2026): Trích Xuất & Làm Sạch Văn Bản (Data Cleaning)
-- [Task 1.1: Python Client kết nối MinIO & quét file theo Tenant](../tasks/week_04/task_08_minio_client.md)
-- [Task 1.2: Text Extractor & Normalizer (Unicode NFC, làm sạch, giữ cấu trúc tiêu đề)](../tasks/week_04/task_09_text_cleaning.md)
+- 🔒 Task 1.1: Python Client kết nối MinIO & quét file theo Tenant *(mở ngày 07/12/2026)*
+- 🔒 Task 1.2: Text Extractor & Normalizer (Unicode NFC, làm sạch, giữ cấu trúc tiêu đề) *(mở ngày 07/12/2026)*
 
 > 🏖️ **Nghỉ thi học kỳ 1 & Tết Dương lịch (28/12/2026 – 10/01/2027):** không giao task mới. Dùng để ôn thi, hoặc làm nốt phần còn dở nếu có thời gian.
 
 ### Sprint 5 (11/01 – 24/01/2027): Semantic Chunking & Idempotent Ingestion
-- **Task 1.3:** Thiết kế thuật toán cắt đoạn (Chunking Strategy: Recursive Character Splitter với overlap 15-20%), đính kèm Metadata (`tenant_id`, `chunk_index`, tiêu đề mục chứa đoạn).
-- **Task 1.4:** Tính mã băm nội dung (SHA-256) **sau khi đã chuẩn hóa ở Task 1.2** và thiết kế logic nạp Idempotent (chạy lại nhiều lần không trùng dữ liệu).
+- 🔒 Task 1.3: Cắt đoạn văn bản (Chunking) với overlap 15–20% & đính kèm metadata (tenant, vị trí, tiêu đề mục) *(mở ngày 04/01/2027)*
+- 🔒 Task 1.4: Mã băm SHA-256 trên văn bản đã chuẩn hóa & logic nạp Idempotent (NEW / UNCHANGED / CHANGED) *(mở ngày 04/01/2027)*
 
 > 🧘 **Tuần đệm (25/01 – 31/01/2027):** làm nốt task còn dở của Sprint 1–5. Không có task mới.
 >
 > 🧧 **Nghỉ Tết Nguyên Đán (01/02 – 14/02/2027, mùng 1 Tết: 06/02/2027).**
 
 ### Sprint 6 (15/02 – 28/02/2027): Database Writer & Versioning
-- **Task 1.5:** Viết module ghi PostgreSQL qua `psycopg` / `SQLAlchemy`. **Tách 2 role database:** `docflow_owner` (tạo và sở hữu bảng) và `docflow_app` (ứng dụng dùng hằng ngày, chỉ có quyền đọc/ghi dữ liệu). Superuser và chủ sở hữu bảng mặc định **bỏ qua Row Level Security**. Tách role từ bây giờ để đến Task 6.1 bật RLS là có tác dụng ngay.
-- **Task 1.6:** Xử lý file bị sửa nội dung theo kiểu **SCD Type 2**: viết migration bổ sung `valid_from` / `valid_to`, đóng phiên bản cũ (`is_active = FALSE`, `valid_to = now()`) và mở phiên bản mới trong **cùng một transaction**.
+- 🔒 Task 1.5: Ghi dữ liệu vào PostgreSQL & tách quyền database (`docflow_owner` / `docflow_app`) *(mở ngày 25/01/2027)*
+- 🔒 Task 1.6: Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of) *(mở ngày 25/01/2027)*
 
 ### Sprint 7 (01/03 – 14/03/2027): Local Vector Embedding & pgvector Storage
-- **Task 2.1:** Tích hợp mô hình nhúng chạy cục bộ **hỗ trợ tiếng Việt**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` hoặc `intfloat/multilingual-e5-small` (đều sinh vector **384 chiều**, chạy trên CPU, chi phí $0). *Không dùng `all-MiniLM-L6-v2`: mô hình này chỉ được huấn luyện trên tiếng Anh, sẽ cho kết quả kém với tài liệu tiếng Việt.*
-- **Task 2.2:** Lưu vector vào bảng `document_chunks`, kèm **mã băm nội dung từng chunk** làm khóa bộ nhớ đệm (cache), để chunk không đổi thì không phải tính lại embedding.
+- 🔒 Task 2.1: Vector embedding đa ngôn ngữ chạy cục bộ trên CPU (`paraphrase-multilingual-MiniLM-L12-v2` / `multilingual-e5-small`, 384 chiều) *(mở ngày 22/02/2027)*
+- 🔒 Task 2.2: Lưu vector vào pgvector & bộ nhớ đệm embedding theo mã băm chunk và phiên bản mô hình *(mở ngày 22/02/2027)*
 
 ### Sprint 8 (15/03 – 28/03/2027): Multi-tenant Semantic Search & Đánh Giá
 - **Task 2.3:** Viết hàm tìm kiếm ngữ nghĩa `search(query, tenant_id, top_k)` dùng Cosine Distance (`<=>`), bắt buộc cách ly dữ liệu theo tenant. Tìm hiểu vì sao lọc `WHERE tenant_id = ...` kết hợp index HNSW có thể trả về **ít hơn `top_k`** kết quả (từ khóa: `pgvector filtering iterative index scans`).

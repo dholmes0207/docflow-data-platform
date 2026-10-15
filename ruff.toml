@@ -1,6 +1,6 @@
 # Cấu hình lint/format Python cho toàn repo (dùng chung cho test và code pipeline sau này).
 line-length = 120
-target-version = "py310"
+target-version = "py312"  # khớp Python 3.12 của Ubuntu 24.04 và CI
 
 [lint]
 # E/F: lỗi cú pháp & biến không dùng; I: thứ tự import; B: bug phổ biến; UP: cú pháp Python hiện đại

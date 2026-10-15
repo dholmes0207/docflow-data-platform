@@ -1,0 +1,3 @@
+# Khóa CÔNG KHAI (age) của mentor, dùng để mã hóa task chưa tới ngày mở. Không phải bí mật.
+# Khóa bí mật tương ứng chỉ nằm trong secret TASK_UNLOCK_KEY của GitHub Environment `task-release`.
+age1m5l0l9ujcqwq9zmg7kf682z56h3z2er55l5en6el8tpx5npwscpspksumh

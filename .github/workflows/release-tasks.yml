@@ -1,0 +1,75 @@
+# Phát hành task theo lịch trong tasks/release_schedule.toml.
+# - Tự chạy 08:00 thứ Hai hằng tuần (giờ Việt Nam): mở các sprint đã tới ngày.
+# - Mentor mở sớm: tab Actions → release-tasks → Run workflow → nhập số sprint.
+# Kết quả là một Pull Request phát hành; task chỉ hiện ra khi mentor merge PR đó.
+#
+# Khóa bí mật TASK_UNLOCK_KEY nằm trong GitHub Environment `task-release`, chỉ cho phép nhánh main dùng,
+# nên workflow trên nhánh khác hoặc trong PR không thể đọc được khóa.
+name: release-tasks
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+    inputs:
+      sprint:
+        description: "Mở ngay sprint số mấy? (để trống = mở các sprint đã tới ngày)"
+        required: false
+        type: string
+
+concurrency: release-tasks
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: task-release
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Bỏ qua nếu đang có PR phát hành chưa merge
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr list --state open --json headRefName --jq '.[].headRefName' | grep -q '^release/tasks-'; then
+            echo "Đang có PR phát hành chưa merge, chờ mentor merge trước."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Cài age
+        if: steps.guard.outputs.skip != 'true'
+        run: sudo apt-get update -q && sudo apt-get install -y -q age
+      - name: Giải mã task
+        id: release
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          TASK_UNLOCK_KEY: ${{ secrets.TASK_UNLOCK_KEY }}
+          SPRINT: ${{ inputs.sprint }}
+        run: |
+          if [ -n "$SPRINT" ]; then
+            python3 scripts/task_release.py release --sprint "$SPRINT" --summary "$RUNNER_TEMP/released.md"
+          else
+            python3 scripts/task_release.py release --due --summary "$RUNNER_TEMP/released.md"
+          fi
+          if [ -f "$RUNNER_TEMP/released.md" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Mở Pull Request phát hành
+        if: steps.release.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="release/tasks-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A tasks roadmap
+          git commit -m "docs(tasks): phát hành task theo lịch"
+          git push origin "$BRANCH"
+          {
+            echo "Phát hành tự động theo \`tasks/release_schedule.toml\`:"
+            echo
+            cat "$RUNNER_TEMP/released.md"
+            echo
+            echo "Merge PR này để học viên thấy các task trên. (PR do bot tạo nên CI không tự chạy; mentor merge bằng quyền admin.)"
+          } > "$RUNNER_TEMP/body.md"
+          gh pr create --base main --head "$BRANCH" --title "Phát hành task mới theo lịch" --body-file "$RUNNER_TEMP/body.md"

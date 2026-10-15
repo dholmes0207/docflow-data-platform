@@ -1,0 +1,51 @@
+# Lịch phát hành task (do mentor quản lý).
+#
+# Task của sprint chưa tới ngày được lưu ở dạng mã hóa trong tasks/_locked/ (đọc không được).
+# Workflow .github/workflows/release-tasks.yml chạy 08:00 thứ Hai hằng tuần (giờ Việt Nam):
+# sprint nào có `release` <= hôm nay thì được giải mã và mở Pull Request phát hành.
+# Mentor cũng có thể mở sớm một sprint: tab Actions → release-tasks → Run workflow → nhập số sprint.
+#
+# Quy ước: mở vào thứ Hai, 1 tuần trước ngày sprint bắt đầu (xem roadmap/overview.md).
+# `title` phải khớp đúng chữ hiển thị trong roadmap/overview.md (gate test kiểm tra).
+# Lệnh dùng: python3 scripts/task_release.py --help
+
+[[sprint]]
+number = 3
+release = 2026-11-23
+tasks = [
+  { id = "0.6", path = "tasks/week_03/task_06_expand_corpus.md", title = "Mở rộng bộ dữ liệu (corpus) & bộ câu hỏi đánh giá" },
+  { id = "1.0", path = "tasks/week_03/task_07_project_skeleton.md", title = "Khung dự án Python & quy ước code" },
+]
+
+[[sprint]]
+number = 4
+release = 2026-12-07
+tasks = [
+  { id = "1.1", path = "tasks/week_04/task_08_minio_client.md", title = "Python Client kết nối MinIO & quét file theo Tenant" },
+  { id = "1.2", path = "tasks/week_04/task_09_text_cleaning.md", title = "Text Extractor & Normalizer (Unicode NFC, làm sạch, giữ cấu trúc tiêu đề)" },
+]
+
+[[sprint]]
+number = 5
+release = 2027-01-04
+tasks = [
+  { id = "1.3", path = "tasks/week_05/task_10_chunking.md", title = "Cắt đoạn văn bản (Chunking) với overlap 15–20% & đính kèm metadata (tenant, vị trí, tiêu đề mục)" },
+  { id = "1.4", path = "tasks/week_05/task_11_idempotent_ingestion.md", title = "Mã băm SHA-256 trên văn bản đã chuẩn hóa & logic nạp Idempotent (NEW / UNCHANGED / CHANGED)" },
+]
+
+# Sprint 6 bắt đầu 15/02/2027. Theo quy ước thì mở 08/02 (mùng 3 Tết), nên mở sớm vào đầu tuần đệm.
+[[sprint]]
+number = 6
+release = 2027-01-25
+tasks = [
+  { id = "1.5", path = "tasks/week_06/task_12_db_writer.md", title = "Ghi dữ liệu vào PostgreSQL & tách quyền database (`docflow_owner` / `docflow_app`)" },
+  { id = "1.6", path = "tasks/week_06/task_13_scd2_versioning.md", title = "Quản lý phiên bản tài liệu theo SCD Type 2 (`valid_from` / `valid_to`, truy vấn as-of)" },
+]
+
+[[sprint]]
+number = 7
+release = 2027-02-22
+tasks = [
+  { id = "2.1", path = "tasks/week_07/task_14_embedding.md", title = "Vector embedding đa ngôn ngữ chạy cục bộ trên CPU (`paraphrase-multilingual-MiniLM-L12-v2` / `multilingual-e5-small`, 384 chiều)" },
+  { id = "2.2", path = "tasks/week_07/task_15_vector_storage_cache.md", title = "Lưu vector vào pgvector & bộ nhớ đệm embedding theo mã băm chunk và phiên bản mô hình" },
+]

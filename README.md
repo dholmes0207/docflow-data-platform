@@ -50,10 +50,15 @@ docflow-data-platform/
 │   ├── overview.md           # Lộ trình tổng thể dự án
 │   └── weekly_tracker.md     # Bảng theo dõi tiến độ & hạn nộp từng task
 ├── tasks/                    # Task chi tiết, thư mục week_XX = Sprint XX
+│   ├── release_schedule.toml # Lịch mở các task đang khóa
+│   ├── _locked/              # Task của sprint sau, đang mã hóa (🔒), tự mở theo lịch
 │   ├── week_01/              # Sprint 1: Môi trường làm việc chuẩn (WSL2, Docker)
 │   ├── week_02/              # Sprint 2: Hạ tầng lưu trữ, Database & Data Modeling
-│   ├── week_03/              # Sprint 3: Khung dự án Python & mở rộng bộ dữ liệu
-│   └── week_04/              # Sprint 4: Kết nối MinIO & làm sạch văn bản
+│   ├── week_03/              # Sprint 3: Khung dự án Python & mở rộng bộ dữ liệu (🔒 mở theo lịch)
+│   ├── week_04/              # Sprint 4: Kết nối MinIO & làm sạch văn bản (🔒 mở theo lịch)
+│   ├── week_05/              # Sprint 5: Chunking & nạp dữ liệu không trùng lặp (🔒 mở theo lịch)
+│   ├── week_06/              # Sprint 6: Ghi database, tách role & SCD Type 2 (🔒 mở theo lịch)
+│   └── week_07/              # Sprint 7: Embedding đa ngôn ngữ & lưu vector có bộ nhớ đệm (🔒 mở theo lịch)
 ├── infra/                    # Thư mục cấu hình hạ tầng mẫu (tham khảo)
 │   ├── docker-compose.yml
 │   ├── .env.example          # Mẫu biến môi trường (copy thành .env, không commit .env)

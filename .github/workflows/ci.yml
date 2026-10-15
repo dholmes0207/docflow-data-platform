@@ -69,8 +69,23 @@ jobs:
 
   # Unit test của chính học viên (từ Task 1.0): cài dự án theo pyproject.toml rồi chạy mọi test ngoài tests/gates/.
   # Chưa có pyproject.toml thì bỏ qua (xanh); đã có pyproject.toml mà không có test nào thì pytest báo đỏ.
+  # Có sẵn Postgres + pgvector: DATABASE_URL là tài khoản quản trị để test tích hợp tự dựng database, schema và role.
   unit:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v9.0.0
