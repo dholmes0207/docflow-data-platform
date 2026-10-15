@@ -59,13 +59,20 @@ Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
   - Cần trường `embedding` (`vector(384)`): Lưu vector đặc trưng (độ dài 384 tương ứng với mô hình phổ biến và nhẹ nhất là `all-MiniLM-L6-v2`).
   - Cần trường `metadata` (`JSONB`): Giúp lưu trữ linh hoạt các thông tin phụ trợ (số trang, tên chương mục, ngày tạo,...).
 
-### 2. Thiết Kế Chỉ Mục (Indexes)
+### 2. Ràng Buộc Toàn Vẹn (Constraints): Để Database Tự Chặn Dữ Liệu Sai
+Code pipeline có thể có bug, nhưng ràng buộc trong database thì luôn được kiểm tra. Hãy tự hỏi: *"Nếu code ghi sai, database có tự chặn được không?"*
+- **Chunk phải cùng tenant với document cha:** Khóa ngoại thông thường chỉ kiểm tra `document_id` có tồn tại. Hãy tìm hiểu **khóa ngoại ghép (composite foreign key)** trên cặp `(document_id, tenant_id)` để một chunk không thể mang `tenant_id` khác với tài liệu gốc của nó.
+- **Không trùng chunk khi chạy lại pipeline:** Ràng buộc `UNIQUE` trên cặp nào sẽ khiến lần chạy thứ hai không thể chèn thêm "đoạn 0" lần nữa cho cùng một tài liệu?
+- **Chỉ một phiên bản đang hiệu lực:** Tìm hiểu **partial unique index** (`CREATE UNIQUE INDEX ... WHERE is_active`) để mỗi file của một tenant chỉ có tối đa 1 bản ghi `is_active = TRUE`.
+- **Cột `updated_at`:** `DEFAULT CURRENT_TIMESTAMP` chỉ có tác dụng lúc INSERT. Muốn cột này tự cập nhật khi UPDATE, bạn cần tìm hiểu về **trigger** trong PostgreSQL.
+
+### 3. Thiết Kế Chỉ Mục (Indexes)
 - Bảng nào cũng nên đánh Index trên `tenant_id` vì hầu hết các câu truy vấn nghiệp vụ đều lọc theo công ty.
 - Với cột `embedding`, sau khi kích hoạt extension `vector`, bạn có thể tìm hiểu cú pháp tạo Index loại `hnsw` với toán tử khoảng cách `vector_cosine_ops` (Cosine Distance) để tối ưu tốc độ tìm kiếm tương đồng.
 
 *(Bạn có thể tham khảo file mẫu gợi ý tại [`infra/sql/init.sql`](../../infra/sql/init.sql) trong thư mục dự án để đối chiếu với thiết kế của mình).*
 
-### 3. Những Vấn Đề Thường Gặp
+### 4. Những Vấn Đề Thường Gặp
 - **Lỗi kiểu dữ liệu `vector` không tồn tại (`type "vector" does not exist`):**
   - Nguyên nhân: Bạn chưa chạy lệnh `CREATE EXTENSION IF NOT EXISTS vector;` trước khi tạo bảng.
 - **Tạo Index HNSW bị báo lỗi hoặc tốn nhiều thời gian:**

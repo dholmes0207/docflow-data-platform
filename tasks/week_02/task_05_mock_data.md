@@ -54,9 +54,11 @@ Bạn có thể tự do sáng tạo nội dung văn bản liên quan đến các
 
 *(Bạn có thể tham khảo một số nội dung văn bản mẫu có sẵn trong thư mục [`sample_data/`](../../sample_data/) của repo để lấy ý tưởng).*
 
+**Gợi ý cho trường hợp "tài liệu có 2 phiên bản":** Thư mục [`sample_data/updates/`](../../sample_data/updates/) chứa bản sửa đổi (phiên bản 2) của `tenant_retail/quy_che_doi_tra.md`. Ban đầu bạn chỉ tải phiên bản 1 lên MinIO. Đến khi kiểm thử tính năng Versioning (Tuần 5), hãy tải phiên bản 2 lên **đè đúng object key cũ** (`tenant_retail/quy_che_doi_tra.md`) để giả lập việc nhân viên sửa và tải lại tài liệu.
+
 ### 2. Thao Tác Đưa Dữ Liệu Lên MinIO
-- Mở MinIO Console trên trình duyệt (`http://localhost:9001`).
-- Đăng nhập vào bucket `raw-documents`.
+- Mở MinIO Console trên trình duyệt (`http://localhost:9001`) và đăng nhập bằng tài khoản root đã cấu hình trong file `.env`.
+- Mở bucket `raw-documents`.
 - Sử dụng tính năng tạo folder trên MinIO UI để tạo 2 folder tương ứng: `tenant_retail/` và `tenant_tech/`.
 - Tải các file văn bản tương ứng vào từng thư mục.
 - Kiểm tra danh sách đường dẫn hiển thị trên MinIO để đảm bảo tên tenant luôn nằm ở đầu đường dẫn file (ví dụ: `tenant_retail/quy_che_doi_tra.md`).
