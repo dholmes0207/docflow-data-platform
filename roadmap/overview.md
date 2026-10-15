@@ -31,7 +31,7 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 
 ### Sprint 2 (16/11 – 29/11/2026): Hạ Tầng Lưu Trữ & Data Modeling → 🎯 Mốc M1
 - [Task 0.3: Dựng MinIO + PostgreSQL + pgvector với Docker Compose](../tasks/week_02/task_03_docker_compose_infra.md)
-- [Task 0.4: Thiết kế ERD & Viết Schema init.sql](../tasks/week_02/task_04_data_modeling.md)
+- [Task 0.4: Thiết kế ERD & tự viết schema `db/schema.sql`](../tasks/week_02/task_04_data_modeling.md)
 - [Task 0.5: Chuẩn bị Mock Data & Edge Cases](../tasks/week_02/task_05_mock_data.md)
 
 ### Sprint 3 (30/11 – 13/12/2026): Khung Dự Án & Bộ Dữ Liệu Thật Sự
