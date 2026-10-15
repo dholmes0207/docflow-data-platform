@@ -10,6 +10,7 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - **Giữa sprint:** tự cập nhật trạng thái trong tracker. Nếu bị tắc quá 2 buổi, nhắn mentor ngay, không đợi đến buổi review.
 - Thư mục `tasks/week_XX/` tương ứng với **Sprint XX** (ví dụ `tasks/week_03/` là Sprint 3).
 - Task được viết chi tiết trước 1–2 sprint (cuốn chiếu). Các sprint xa hơn chỉ có mô tả ngắn bên dưới và sẽ được bổ sung dần.
+- Task có biểu tượng 🔒 đã được viết xong nhưng **đang khóa**: nó tự mở vào thứ Hai ghi bên cạnh (1 tuần trước khi sprint bắt đầu). Bạn không cần làm gì, chỉ cần `git pull` sau ngày đó.
 - Lịch nghỉ dưới đây là **dự kiến**. Hãy báo mentor lịch thi thật của bạn để điều chỉnh sớm.
 
 ## 🎯 Các Mốc Kiểm Tra

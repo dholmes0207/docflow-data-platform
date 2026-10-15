@@ -85,7 +85,13 @@ Gate test là "hàng rào" do mentor đặt ra để giữ repo luôn đúng. Qu
 
 ---
 
-## 7. Quy trình review mỗi sprint (2 tuần)
+## 7. Task bị khóa (🔒)
+
+Task của các sprint sau được viết trước nhưng lưu ở dạng mã hóa trong `tasks/_locked/`, theo lịch ở
+`tasks/release_schedule.toml`. Mỗi sprint mở vào thứ Hai, 1 tuần trước khi sprint đó bắt đầu (roadmap ghi rõ ngày).
+Không sửa, xóa hay đổi tên các file trong `tasks/_locked/` và file lịch: CI (`hygiene`) sẽ báo đỏ.
+
+## 8. Quy trình review mỗi sprint (2 tuần)
 
 1. Làm task trên nhánh riêng → mở PR → điền mẫu mô tả PR.
 2. Đợi CI xanh. CI đỏ thì tự sửa trước, mentor chưa review PR đỏ.
