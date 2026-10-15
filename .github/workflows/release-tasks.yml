@@ -21,7 +21,7 @@ concurrency: release-tasks
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: task-release
     permissions:
       contents: write
