@@ -25,7 +25,8 @@ Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
 - **Docker Volumes (Data Persistence):** Vòng đời dữ liệu của container là tạm thời (ephemeral). Làm thế nào để dữ liệu trong database và bucket không bị biến mất khi container bị tắt hoặc xóa?
 
 ### 2. Từ Khóa Tra Cứu (Search Keywords)
-- `docker compose file format version 3 specification`
+- `docker compose specification compose file reference`
+- `docker compose environment variables .env file interpolation`
 - `minio docker compose server console port configuration`
 - `pgvector docker official image pgvector/pgvector`
 - `docker compose named volumes persist postgres data`
@@ -63,6 +64,7 @@ Một file compose chuẩn thường bao gồm các khối chính:
 *(Bạn có thể tham khảo một file mẫu sẵn có tại thư mục [`infra/docker-compose.yml`](../../infra/docker-compose.yml) trong dự án để đối chiếu với cấu hình bạn tự viết).*
 
 ### 2. Các Lệnh Thao Tác Thường Dùng Với Docker Compose
+- Chuẩn bị biến môi trường (chỉ làm 1 lần): copy file mẫu `infra/.env.example` thành `infra/.env` rồi đổi mật khẩu. File compose mẫu đọc mật khẩu từ `.env` thay vì ghi cứng trong YAML, và `.env` đã được đưa vào `.gitignore` để không lộ mật khẩu lên Git.
 - Khởi động cụm dịch vụ và cho chạy ngầm: `docker compose up -d`
 - Xem trạng thái các container đang chạy: `docker compose ps`
 - Xem log hiển thị của các dịch vụ để debug khi gặp lỗi: `docker compose logs -f` (hoặc chỉ định tên dịch vụ: `docker compose logs -f postgres`)
@@ -72,6 +74,10 @@ Một file compose chuẩn thường bao gồm các khối chính:
 - **Trùng cổng 5432 (Port is already allocated):**
   - Rất nhiều bạn học ngành CNTT từng cài đặt PostgreSQL trực tiếp lên Windows trong các môn học cơ sở dữ liệu trước đó, khiến cổng 5432 trên Windows luôn bị chiếm dụng bởi Windows Service.
   - *Cách xử lý:* Bạn có thể mở ứng dụng `Services` trên Windows, tìm dịch vụ PostgreSQL local và bấm Stop; hoặc đổi cổng ánh xạ bên ngoài máy host trong file compose thành cổng khác (ví dụ `"5433:5432"`).
+- **Sửa file `init.sql` nhưng database không thay đổi:**
+  - Postgres chỉ chạy các script trong `/docker-entrypoint-initdb.d` khi volume dữ liệu còn trống (lần khởi tạo đầu tiên). Muốn chạy lại, bạn cần xóa volume bằng `docker compose down -v` (lưu ý: thao tác này xóa sạch dữ liệu cũ) rồi `docker compose up -d`.
+- **Lỗi `required variable POSTGRES_PASSWORD is missing a value`:**
+  - Bạn chưa tạo file `.env` trong thư mục `infra/`, hoặc đang chạy lệnh compose ở thư mục khác. Hãy kiểm tra lại bước chuẩn bị biến môi trường ở trên.
 - **Dữ liệu trong MinIO bị reset mỗi lần restart:**
   - Kiểm tra xem đường dẫn ánh xạ volume của MinIO đã trỏ đúng vào thư mục `/data` bên trong container hay chưa.
 
