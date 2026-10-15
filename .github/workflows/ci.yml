@@ -57,8 +57,15 @@ jobs:
       - uses: astral-sh/setup-uv@v9.0.0
       - name: Cài công cụ kiểm tra
         run: uv venv --python 3.12 && uv pip install -r requirements-dev.txt
-      - name: Gate test schema
+      - name: Gate test schema mẫu (infra/sql/init.sql)
         run: .venv/bin/pytest tests/gates/test_schema_constraints.py -q
+      - name: Gate test schema của học viên (db/schema.sql, Task 0.4)
+        run: |
+          if [ ! -f db/schema.sql ]; then
+            echo "Chưa có db/schema.sql (Task 0.4), chưa có gì để kiểm tra."
+            exit 0
+          fi
+          INIT_SQL_PATH=db/schema.sql .venv/bin/pytest tests/gates/test_schema_constraints.py -q
 
   # Unit test của chính học viên (từ Task 1.0): cài dự án theo pyproject.toml rồi chạy mọi test ngoài tests/gates/.
   # Chưa có pyproject.toml thì bỏ qua (xanh); đã có pyproject.toml mà không có test nào thì pytest báo đỏ.

@@ -1,18 +1,32 @@
 # Task 0.4: Thiết Kế Mô Hình Dữ Liệu (Data Modeling) Cho Hệ Thống Multi-Tenant RAG
 
-- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
-- **Mục tiêu:** Hiểu tư duy thiết kế cơ sở dữ liệu quan hệ kết hợp lưu trữ vector cho một bài toán đa doanh nghiệp (Multi-tenant), xây dựng sơ đồ ERD và chuẩn bị kịch bản SQL khởi tạo cấu trúc bảng.
+- **Giai đoạn:** Sprint 2 — Hạ tầng & Mô hình dữ liệu
+- **Mục tiêu:** Hiểu tư duy thiết kế cơ sở dữ liệu quan hệ kết hợp lưu trữ vector cho một bài toán đa doanh nghiệp (Multi-tenant), xây dựng sơ đồ ERD và **tự viết** kịch bản SQL khởi tạo cấu trúc bảng, sao cho chính database tự chặn được dữ liệu sai.
 
 ---
 
 ## 🎯 Mục Tiêu Cần Đạt (Definition of Done)
 
 Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
-1. Bạn vẽ được sơ đồ thực thể liên kết (ERD) mô tả mối quan hệ giữa 2 bảng chính: `documents` (Tài liệu gốc) và `document_chunks` (Các đoạn văn bản đã cắt để tìm kiếm).
-2. Thiết kế bảng đảm bảo được tính **cách ly theo doanh nghiệp (Multi-tenancy)**: bất kỳ bảng nào chứa dữ liệu nghiệp vụ cũng phải có định danh `tenant_id`.
-3. Có cơ chế nhận diện trùng lặp/sửa đổi file dựa trên mã băm nội dung (Hash-based Idempotency) và quản lý phiên bản (Versioning) trong bảng `documents`.
-4. Bảng `document_chunks` có trường lưu vector đặc trưng (độ dài vector phù hợp với mô hình embedding sẽ dùng, ví dụ: 384 chiều) và ràng buộc khóa ngoại (Foreign Key) chặt chẽ với bảng `documents`.
-5. Tạo thành công các bảng trên cơ sở dữ liệu PostgreSQL thực tế thông qua kịch bản SQL.
+1. Bạn vẽ được sơ đồ thực thể liên kết (ERD) mô tả mối quan hệ giữa 2 bảng chính: `documents` (Tài liệu gốc) và `document_chunks` (Các đoạn văn bản đã cắt để tìm kiếm), lưu tại `docs/erd.md` (Mermaid hoặc ảnh).
+2. Bạn **tự viết** kịch bản SQL tại `db/schema.sql`, tuân theo "hợp đồng tên" dưới đây để code của các sprint sau và bộ kiểm tra tự động dùng chung được. Bạn được thêm cột, tự chọn kiểu dữ liệu, ràng buộc và index, nhưng **không đổi tên** các bảng và cột sau:
+
+   | Bảng | Cột bắt buộc |
+   |---|---|
+   | `documents` | `id`, `tenant_id` (chuỗi, ví dụ `tenant_retail`), `file_name`, `file_path`, `file_hash`, `version`, `is_active` (mặc định `TRUE`), `created_at`, `updated_at` |
+   | `document_chunks` | `id`, `document_id`, `tenant_id`, `chunk_index`, `content`, `embedding` (vector 384 chiều), `metadata` |
+
+3. Chính database (không phải code Python) **tự từ chối** các tình huống dữ liệu sai sau:
+   - chunk mang `tenant_id` khác với tài liệu gốc của nó;
+   - chạy lại pipeline sinh ra chunk trùng (cùng tài liệu, cùng `chunk_index`);
+   - một file của một tenant có 2 phiên bản cùng `is_active = TRUE`;
+   - `version` nhỏ hơn 1, hoặc `chunk_index` âm;
+   - đổi `tenant_id` của tài liệu đang có chunk.
+
+   Ngoài ra: xóa tài liệu thì chunk của nó bị xóa theo, `updated_at` tự cập nhật mỗi khi sửa bản ghi, và có index HNSW (cosine) trên cột `embedding`.
+4. `db/schema.sql` chạy được **2 lần liên tiếp** trên cùng một database mà không lỗi, và check CI **`schema`** chạy bộ gate test lên file của bạn ra kết quả xanh.
+5. Có `docs/schema_decisions.md` giải thích **bằng lời của bạn**: mỗi ràng buộc và index chặn được lỗi gì, vì sao chọn cách đó, và cách nào khác bạn đã cân nhắc.
+6. Không sao chép file mẫu `infra/sql/init.sql`. Trong buổi review, bạn sẽ được hỏi lại về từng dòng trong schema của mình.
 
 ---
 
@@ -56,7 +70,7 @@ Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
   - Cần trường `tenant_id`: Mặc dù đã có `document_id`, việc lưu thêm `tenant_id` tại bảng chunk giúp câu lệnh tìm kiếm ngữ nghĩa có thể lọc trực tiếp `WHERE tenant_id = '...'` mà không bắt buộc phải JOIN sang bảng document, tăng tốc độ truy vấn đáng kể.
   - Cần trường `chunk_index`: Vị trí của đoạn trong văn bản (đoạn 0, đoạn 1, đoạn 2,...).
   - Cần trường `content` (TEXT): Chứa nội dung chữ thực tế của đoạn đó để trả về cho người dùng đọc.
-  - Cần trường `embedding` (`vector(384)`): Lưu vector đặc trưng (độ dài 384 tương ứng với mô hình phổ biến và nhẹ nhất là `all-MiniLM-L6-v2`).
+  - Cần trường `embedding` (`vector(384)`): Lưu vector đặc trưng. Độ dài 384 tương ứng với các mô hình embedding đa ngôn ngữ cỡ nhỏ sẽ dùng ở Sprint 7 (ví dụ `paraphrase-multilingual-MiniLM-L12-v2`).
   - Cần trường `metadata` (`JSONB`): Giúp lưu trữ linh hoạt các thông tin phụ trợ (số trang, tên chương mục, ngày tạo,...).
 
 ### 2. Ràng Buộc Toàn Vẹn (Constraints): Để Database Tự Chặn Dữ Liệu Sai
@@ -70,12 +84,25 @@ Code pipeline có thể có bug, nhưng ràng buộc trong database thì luôn �
 - Bảng nào cũng nên đánh Index trên `tenant_id` vì hầu hết các câu truy vấn nghiệp vụ đều lọc theo công ty.
 - Với cột `embedding`, sau khi kích hoạt extension `vector`, bạn có thể tìm hiểu cú pháp tạo Index loại `hnsw` với toán tử khoảng cách `vector_cosine_ops` (Cosine Distance) để tối ưu tốc độ tìm kiếm tương đồng.
 
-*(Bạn có thể tham khảo file mẫu gợi ý tại [`infra/sql/init.sql`](../../infra/sql/init.sql) trong thư mục dự án để đối chiếu với thiết kế của mình).*
+### 4. Tự Kiểm Tra Trước Khi Nộp
+Khi cụm Docker Compose của Task 0.3 đang chạy, bạn có thể chạy đúng bộ kiểm tra mà CI sẽ chạy lên schema của bạn (xem cách cài trong `CONTRIBUTING.md`):
+```bash
+INIT_SQL_PATH=db/schema.sql \
+  DATABASE_URL=postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@localhost:5432/<POSTGRES_DB> \
+  pytest tests/gates/test_schema_constraints.py
+```
+Mỗi test đỏ có thông báo cho biết tình huống dữ liệu sai nào chưa bị chặn. Hãy tự tìm cách chặn, đừng đi tìm "đáp án".
 
-### 4. Những Vấn Đề Thường Gặp
+*(File [`infra/sql/init.sql`](../../infra/sql/init.sql) là lời giải tham khảo của mentor. Chỉ nên mở nó **sau khi** PR của task này đã được review đạt, để so sánh với thiết kế của bạn.)*
+
+### 5. Những Vấn Đề Thường Gặp
 - **Lỗi kiểu dữ liệu `vector` không tồn tại (`type "vector" does not exist`):**
   - Nguyên nhân: Bạn chưa chạy lệnh `CREATE EXTENSION IF NOT EXISTS vector;` trước khi tạo bảng.
-- **Tạo Index HNSW bị báo lỗi hoặc tốn nhiều thời gian:**
-  - HNSW là giải pháp tìm kiếm láng giềng gần đúng rất nhanh. Nếu chưa quen với HNSW, ở giai đoạn đầu bạn hoàn toàn có thể chạy query trực tiếp mà chưa cần tạo vector index, sau đó bổ sung index khi số lượng bản ghi lớn hơn.
+- **Tạo Index HNSW bị báo lỗi:**
+  - Kiểm tra extension `vector` đã được tạo trước, và toán tử (operator class) khớp với loại khoảng cách bạn định dùng (cosine). Trên bảng rỗng, việc tạo index HNSW gần như tức thì; nó chỉ chậm khi bảng đã có rất nhiều vector.
+- **Chạy `db/schema.sql` lần thứ 2 bị lỗi `already exists`:**
+  - Tìm hiểu các dạng `CREATE ... IF NOT EXISTS` và `CREATE OR REPLACE`. Không phải câu lệnh nào cũng hỗ trợ cả hai.
+- **Test báo lỗi tên cột / tên bảng không tồn tại:**
+  - Kiểm tra lại "hợp đồng tên" ở mục Definition of Done 2. Bộ kiểm tra dùng đúng các tên đó.
 
 </details>
