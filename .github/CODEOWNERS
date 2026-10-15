@@ -1,0 +1,4 @@
+# Chủ sở hữu mã nguồn (Code Owners) của repo DocFlow.
+# Mọi Pull Request thay đổi bất kỳ file nào trong repo đều cần @dholmes0207 review.
+# Quy tắc chỉ bắt buộc khi Ruleset của nhánh main bật "Require review from Code Owners".
+* @dholmes0207
