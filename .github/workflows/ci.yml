@@ -6,18 +6,28 @@ name: ci
 
 on:
   pull_request:
+    # edited: sửa tiêu đề / mô tả PR (ví dụ thêm "Closes #N") thì CI chạy lại
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
 permissions:
   contents: read
 
+# Có lần chạy mới trên cùng PR thì hủy lần cũ đang chạy dở
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  # Cấu trúc repo, tài liệu task, tracker, dữ liệu mẫu, file bị cấm, lint/format Python, cú pháp compose.
+  # Cấu trúc repo, tài liệu task, tracker, dữ liệu mẫu, file bị cấm, lint/format Python, cú pháp compose,
+  # quy ước Git của PR (tên nhánh, commit, tiêu đề, Closes #).
   hygiene:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # cần đủ lịch sử để đọc mọi commit của PR
       - uses: astral-sh/setup-uv@v9.0.0
       - name: Cài công cụ kiểm tra
         run: uv venv --python 3.12 && uv pip install -r requirements-dev.txt
@@ -31,8 +41,18 @@ jobs:
         run: |
           cp infra/.env.example infra/.env
           docker compose -f infra/docker-compose.yml config --quiet
-      - name: Gate test cấu trúc repo
-        run: .venv/bin/pytest tests/gates/test_repo_hygiene.py -q
+      # Mọi gate test không cần database (test schema tự skip ở đây, job schema chạy chúng trên Postgres thật)
+      - name: Gate test cấu trúc repo, lịch phát hành task, quy ước Git
+        run: .venv/bin/pytest tests/gates -q
+      - name: Quy ước Git (tên nhánh, commit, tiêu đề và mô tả PR)
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: .venv/bin/python scripts/check_git_conventions.py --pr
 
   # Chạy infra/sql/init.sql trên Postgres + pgvector thật và thử từng ràng buộc.
   schema:

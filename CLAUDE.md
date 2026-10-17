@@ -9,7 +9,9 @@ Windows + WSL2 Ubuntu 24.04 (Python 3.12), nộp qua Pull Request cuối mỗi s
 - Viết tài liệu, commit message phần mô tả, bình luận PR bằng **tiếng Việt**; xưng "bạn" với học viên.
 - **Không** thêm dòng `Co-Authored-By: Claude...`, `Claude-Session: ...` vào commit message, và **không** thêm
   chữ ký "Generated with Claude Code" vào mô tả PR hay bình luận. Commit dùng danh tính git của người dùng.
-- Không push thẳng `main`: làm trên nhánh, mở PR. Commit theo Conventional Commits.
+- Không push thẳng `main`: làm trên nhánh, mở PR. Commit **và tiêu đề PR** theo Conventional Commits (CI kiểm tra,
+  `scripts/check_git_conventions.py`). Nhánh của mentor dùng tiền tố `claude/` hoặc `mentor/`; nhánh học viên dạng
+  `sprint-XX/<task-X.Y|fix|docs>-mo-ta` và PR phải có `Closes #<issue>`. PR của học viên merge bằng **squash merge**.
 - **Không sửa, xóa hay `skip` test trong `tests/gates/` để CI xanh.** Chỉ sửa gate test khi mentor yêu cầu rõ.
 - Tài liệu task giữ cấu trúc: Definition of Done → Mức 1 (định hướng tự học) → Mức 2 (gợi ý trong `<details>`).
   Gợi ý luồng tư duy và từ khóa tra cứu, **không** đưa lời giải chép được.

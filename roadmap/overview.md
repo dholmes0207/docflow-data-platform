@@ -27,6 +27,9 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 *Mục tiêu: Xây dựng hệ thống nạp dữ liệu hoàn chỉnh từ File thô đến Vector Search và Event Logging.*
 
 ### Sprint 1 (02/11 – 15/11/2026): Thiết Lập Môi Trường Linux Chuẩn & Docker
+> Thứ tự làm: **0.1 → 0.0 → 0.2**. Task 0.0 cần Ubuntu và `git` của Task 0.1; PR của Task 0.0 là PR đầu tiên của bạn.
+
+- [Task 0.0: Quy trình Git & GitHub: issue, quy tắc đặt tên nhánh, commit, Pull Request](../tasks/week_01/task_00_git_github_workflow.md)
 - [Task 0.1: Cài đặt WSL2 (Ubuntu 24.04) & VS Code WSL trên Windows](../tasks/week_01/task_01_wsl_vscode.md)
 - [Task 0.2: Cài đặt Docker Desktop & Cấu hình RAM .wslconfig](../tasks/week_01/task_02_docker_fundamentals.md)
 

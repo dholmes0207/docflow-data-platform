@@ -1,0 +1,2 @@
+# Chỉ cho mở issue theo mẫu (không có issue trống). Quy tắc: CONTRIBUTING.md, mục 2.
+blank_issues_enabled: false

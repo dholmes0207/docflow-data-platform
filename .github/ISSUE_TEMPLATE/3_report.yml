@@ -1,0 +1,23 @@
+name: Báo lỗi đề bài / gate test
+description: Đề bài mâu thuẫn, link hỏng, hoặc bạn tin một gate test trong tests/gates/ kiểm tra sai.
+title: "[Báo lỗi] <mô tả ngắn>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bạn **không** tự sửa, xóa hay `skip` gate test (CONTRIBUTING.md mục 6). Mô tả ở đây, mentor sẽ quyết định.
+  - type: input
+    id: where
+    attributes:
+      label: File và vị trí
+      placeholder: "tasks/week_02/task_04_data_modeling.md, DoD 3  hoặc  tests/gates/test_schema_constraints.py::test_..."
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Vấn đề
+      description: Đề bài nói gì, thực tế thế nào, vì sao bạn cho là sai. Có output lệnh thì dán kèm.
+    validations:
+      required: true

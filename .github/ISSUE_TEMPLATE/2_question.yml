@@ -1,0 +1,44 @@
+name: Hỏi mentor / Bị tắc
+description: Bị tắc quá 2 buổi, hoặc cần hỏi về hướng làm. Mở issue rồi nhắn link cho mentor.
+title: "[Hỏi] <mô tả ngắn vấn đề>"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Một câu hỏi tốt giúp mentor trả lời ngay mà không phải hỏi lại. Repo công khai: **không** dán
+        mật khẩu, token, nội dung file `.env`. Thay chúng bằng `***` trước khi dán log.
+  - type: input
+    id: task
+    attributes:
+      label: Task liên quan
+      placeholder: "Task 0.3 (issue #5)"
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Bạn đang muốn làm gì?
+      description: Mục tiêu, không phải cách làm. Ví dụ "Muốn DBeaver kết nối được Postgres trong Docker".
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: Bạn đã thử những gì?
+      description: Lệnh đã chạy, tài liệu đã đọc, từ khóa đã tra. Liệt kê theo thứ tự.
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Kết quả / thông báo lỗi chính xác
+      description: Dán nguyên văn output (không chụp ảnh chữ). Tự động định dạng thành khối code.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: guess
+    attributes:
+      label: Bạn đoán nguyên nhân là gì?
+      description: Đoán sai cũng không sao, mentor muốn biết bạn đang nghĩ theo hướng nào.

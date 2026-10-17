@@ -1,6 +1,6 @@
 # Task 0.3: Dựng Cụm Hạ Tầng MinIO & PostgreSQL (pgvector) Với Docker Compose
 
-- **Giai đoạn:** Tuần 2 — Hạ tầng & Mô hình dữ liệu
+- **Giai đoạn:** Sprint 2 — Hạ tầng & Mô hình dữ liệu
 - **Mục tiêu:** Hiểu cách dùng Docker Compose để điều phối nhiều dịch vụ chạy cùng nhau trong một mạng nội bộ; dựng thành công dịch vụ lưu trữ file MinIO (chuẩn S3) và cơ sở dữ liệu PostgreSQL có sẵn extension `pgvector`.
 
 ---
