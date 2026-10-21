@@ -44,7 +44,7 @@ Bảng này là không gian trao đổi và ghi nhận tiến độ học tập 
 | **S7** | Task 2.1 | Vector Embedding đa ngôn ngữ chạy local (CPU) | `Chưa bắt đầu` | | | 14/03/2027 |
 | **S7** | Task 2.2 | Lưu trữ Vector & cache embedding theo mã băm chunk | `Chưa bắt đầu` | | | 14/03/2027 |
 | **S8** | Task 2.3 | Hàm tìm kiếm ngữ nghĩa cách ly theo tenant | `Chưa bắt đầu` | | | 28/03/2027 |
-| **S8** | Task 2.4 | Đo chất lượng tìm kiếm bằng Recall@k (FTS vs Vector) | `Chưa bắt đầu` | | | 28/03/2027 |
+| **S8** | Task 2.4 | Đo chất lượng tìm kiếm bằng Recall@k & MRR (FTS vs Vector), ngưỡng "không tìm thấy" | `Chưa bắt đầu` | | | 28/03/2027 |
 | **S9** | Task 3.1 | Giao diện Chat/Search demo bằng Streamlit | `Chưa bắt đầu` | | | 11/04/2027 |
 | **S9** | Task 3.2 | Ghi log truy vấn vào `query_events` (đã che PII) | `Chưa bắt đầu` | | | 11/04/2027 |
 | **S10** | Task 4.1 | Dựng Airflow (LocalExecutor) trên Docker | `Chưa bắt đầu` | | | 25/04/2027 |
