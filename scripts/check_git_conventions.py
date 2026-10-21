@@ -84,9 +84,9 @@ def pr_errors(branch: str, title: str, body: str, subjects: list[str]) -> list[s
 
 
 def _commit_subjects(base: str, head: str) -> list[str]:
-    result = subprocess.run(
-        ["git", "log", "--format=%s", f"{base}..{head}"], cwd=ROOT, capture_output=True, text=True, check=True
-    )
+    result = subprocess.run(["git", "log", "--format=%s", f"{base}..{head}"], cwd=ROOT, capture_output=True, text=True)
+    if result.returncode != 0:
+        sys.exit(f"Không đọc được commit {base[:7]}..{head[:7]} (cần fetch-depth: 0):\n{result.stderr.strip()}")
     return [line for line in result.stdout.splitlines() if line.strip()]
 
 
