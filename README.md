@@ -59,7 +59,8 @@ docflow-data-platform/
 │   ├── week_04/              # Sprint 4: Kết nối MinIO & làm sạch văn bản (🔒 mở theo lịch)
 │   ├── week_05/              # Sprint 5: Chunking & nạp dữ liệu không trùng lặp (🔒 mở theo lịch)
 │   ├── week_06/              # Sprint 6: Ghi database, tách role & SCD Type 2 (🔒 mở theo lịch)
-│   └── week_07/              # Sprint 7: Embedding đa ngôn ngữ & lưu vector có bộ nhớ đệm (🔒 mở theo lịch)
+│   ├── week_07/              # Sprint 7: Embedding đa ngôn ngữ & lưu vector có bộ nhớ đệm (🔒 mở theo lịch)
+│   └── week_08/              # Sprint 8: Tìm kiếm cách ly theo tenant & đo chất lượng tìm kiếm (🔒 mở theo lịch)
 ├── infra/                    # Thư mục cấu hình hạ tầng mẫu (tham khảo)
 │   ├── docker-compose.yml
 │   ├── .env.example          # Mẫu biến môi trường (copy thành .env, không commit .env)

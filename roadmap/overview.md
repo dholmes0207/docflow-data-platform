@@ -65,8 +65,8 @@ Lộ trình được thiết kế bám sát thực tế các hệ thống RAG do
 - 🔒 Task 2.2: Lưu vector vào pgvector & bộ nhớ đệm embedding theo mã băm chunk và phiên bản mô hình *(mở ngày 22/02/2027)*
 
 ### Sprint 8 (15/03 – 28/03/2027): Multi-tenant Semantic Search & Đánh Giá
-- **Task 2.3:** Viết hàm tìm kiếm ngữ nghĩa `search(query, tenant_id, top_k)` dùng Cosine Distance (`<=>`), bắt buộc cách ly dữ liệu theo tenant. Tìm hiểu vì sao lọc `WHERE tenant_id = ...` kết hợp index HNSW có thể trả về **ít hơn `top_k`** kết quả (từ khóa: `pgvector filtering iterative index scans`).
-- **Task 2.4:** Dùng bộ câu hỏi của Task 0.6 để tính `Recall@k`, so sánh Full-Text Search với Vector Search. Lưu ý: PostgreSQL không có cấu hình full-text search cho tiếng Việt, hãy tìm hiểu cấu hình `simple` kết hợp extension `unaccent`.
+- 🔒 Task 2.3: Hàm tìm kiếm ngữ nghĩa `search(query, tenant_id, top_k)` cách ly theo tenant (cosine `<=>`, lọc tenant trên index HNSW) *(mở ngày 08/03/2027)*
+- 🔒 Task 2.4: Đo chất lượng tìm kiếm bằng Recall@k & MRR: Full-Text Search (`simple` + `unaccent`) so với Vector Search, ngưỡng "không tìm thấy" *(mở ngày 08/03/2027)*
 
 ### Sprint 9 (29/03 – 11/04/2027): UI Demo (Streamlit) & Event Logging → 🎯 Mốc M2
 - **Task 3.1:** Dựng giao diện Chat/Search đơn giản bằng Streamlit: chọn tenant, nhập câu hỏi, xem các đoạn trích dẫn được trả về.

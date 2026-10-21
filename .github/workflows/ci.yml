@@ -23,6 +23,8 @@ jobs:
   # Cấu trúc repo, tài liệu task, tracker, dữ liệu mẫu, file bị cấm, lint/format Python, cú pháp compose,
   # quy ước Git của PR (tên nhánh, commit, tiêu đề, Closes #).
   hygiene:
+    # Sửa tiêu đề/mô tả của PR đã đóng cũng phát sự kiện `edited`: không có gì để kiểm tra, bỏ qua.
+    if: github.event_name != 'pull_request' || github.event.pull_request.state == 'open'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -56,6 +58,8 @@ jobs:
 
   # Chạy infra/sql/init.sql trên Postgres + pgvector thật và thử từng ràng buộc.
   schema:
+    # Sửa tiêu đề/mô tả của PR đã đóng cũng phát sự kiện `edited`: không có gì để kiểm tra, bỏ qua.
+    if: github.event_name != 'pull_request' || github.event.pull_request.state == 'open'
     runs-on: ubuntu-24.04
     services:
       postgres:
@@ -92,6 +96,8 @@ jobs:
   # Chưa có pyproject.toml thì bỏ qua (xanh); đã có pyproject.toml mà không có test nào thì pytest báo đỏ.
   # Có sẵn Postgres + pgvector: DATABASE_URL là tài khoản quản trị để test tích hợp tự dựng database, schema và role.
   unit:
+    # Sửa tiêu đề/mô tả của PR đã đóng cũng phát sự kiện `edited`: không có gì để kiểm tra, bỏ qua.
+    if: github.event_name != 'pull_request' || github.event.pull_request.state == 'open'
     runs-on: ubuntu-24.04
     services:
       postgres:
@@ -122,6 +128,8 @@ jobs:
 
   # Quét mật khẩu / API key / token trong toàn bộ lịch sử Git.
   secrets:
+    # Sửa tiêu đề/mô tả của PR đã đóng cũng phát sự kiện `edited`: không có gì để kiểm tra, bỏ qua.
+    if: github.event_name != 'pull_request' || github.event.pull_request.state == 'open'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
