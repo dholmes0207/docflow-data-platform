@@ -1,53 +1,43 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
+build/
+dist/
 
-# Virtual environments
-venv/
+# Môi trường ảo
 .venv/
-env/
-ENV/
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Docker / MinIO / DB local storage
-data/
-minio_data/
-postgres_data/
-
-# Environment variables
-.env
-.env.local
-
-# Logs
-*.log
+venv/
 
 # Cache của công cụ kiểm tra
 .pytest_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+
+# Biến môi trường chứa mật khẩu thật: chỉ commit file .env.example
+.env
+.env.*
+!.env.example
+
+# Khóa bí mật (ví dụ khóa age để mở task, khóa SSH): không bao giờ để trong repo
+*.key
+*.pem
+id_rsa*
+id_ed25519*
+
+# Dữ liệu chạy local của Docker (nếu dùng bind mount thay cho named volume)
+minio_data/
+postgres_data/
+
+# Log
+*.log
+
+# IDE / hệ điều hành (Windows tạo *:Zone.Identifier khi copy file từ Windows sang WSL)
+.vscode/
+.idea/
+*.swp
+*:Zone.Identifier
+Thumbs.db
+desktop.ini
+.DS_Store
