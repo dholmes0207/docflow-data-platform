@@ -30,11 +30,12 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 - **Lịch học:** từ 02/11/2026 đến 30/05/2027, chia thành 13 sprint (mỗi sprint 2 tuần), đã trừ các đợt thi và nghỉ Tết. Lịch chi tiết: [`roadmap/overview.md`](roadmap/overview.md).
 - **Tần suất review:** Cuối mỗi sprint, người hướng dẫn sẽ ngồi lại cùng bạn để review tiến độ.
 - **Cách thức:**
-  1. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
-  2. Tạo Pull Request (PR) cho những nội dung đã làm trong sprint. CI sẽ tự kiểm tra PR, cần xanh trước khi review.
-  3. Trong buổi review, bạn sẽ demo nhanh kết quả hoặc giải thích cách bạn đã giải quyết bài toán theo tiêu chí của task.
+  1. Bắt đầu mỗi task bằng một issue và một nhánh riêng, theo quy trình ở [`CONTRIBUTING.md`](CONTRIBUTING.md) mục 2.
+  2. Bạn tự cập nhật trạng thái các task và ghi chú những điều mình đã học được vào file [`roadmap/weekly_tracker.md`](roadmap/weekly_tracker.md).
+  3. Tạo Pull Request (PR) cho từng task, có dòng `Closes #<số issue>`. CI sẽ tự kiểm tra PR, cần xanh trước khi review.
+  4. Trong buổi review, bạn sẽ demo nhanh kết quả hoặc giải thích cách bạn đã giải quyết bài toán theo tiêu chí của task.
 
-> 📏 **Trước khi bắt đầu, hãy đọc [`CONTRIBUTING.md`](CONTRIBUTING.md)**: quy tắc đặt tên nhánh, commit, các file bị cấm, các kiểm tra tự động (pre-commit, CI) và quy trình review mỗi sprint.
+> 📏 **Trước khi bắt đầu, hãy đọc [`CONTRIBUTING.md`](CONTRIBUTING.md)**: cách dùng issue, quy tắc đặt tên nhánh, commit, các file bị cấm, các kiểm tra tự động (pre-commit, CI) và quy trình review mỗi sprint.
 
 ---
 
@@ -44,7 +45,7 @@ Mỗi bài toán trong thư mục `tasks/` được chia thành 2 mức độ h�
 docflow-data-platform/
 ├── README.md                 # Giới thiệu bài toán & hướng dẫn chung
 ├── CONTRIBUTING.md           # Quy tắc làm việc: nhánh, commit, file bị cấm, CI, quy trình review
-├── .github/                  # CODEOWNERS, mẫu mô tả PR, CI (workflows/ci.yml)
+├── .github/                  # CODEOWNERS, mẫu issue & mẫu mô tả PR, CI (ci.yml), phát hành task theo lịch (release-tasks.yml)
 ├── .claude/skills/           # Skill /review-week cho mentor review PR bằng Claude Code
 ├── roadmap/
 │   ├── overview.md           # Lộ trình tổng thể dự án
@@ -52,7 +53,7 @@ docflow-data-platform/
 ├── tasks/                    # Task chi tiết, thư mục week_XX = Sprint XX
 │   ├── release_schedule.toml # Lịch mở các task đang khóa
 │   ├── _locked/              # Task của sprint sau, đang mã hóa (🔒), tự mở theo lịch
-│   ├── week_01/              # Sprint 1: Môi trường làm việc chuẩn (WSL2, Docker)
+│   ├── week_01/              # Sprint 1: Môi trường làm việc chuẩn (WSL2, quy trình Git & GitHub, Docker)
 │   ├── week_02/              # Sprint 2: Hạ tầng lưu trữ, Database & Data Modeling
 │   ├── week_03/              # Sprint 3: Khung dự án Python & mở rộng bộ dữ liệu (🔒 mở theo lịch)
 │   ├── week_04/              # Sprint 4: Kết nối MinIO & làm sạch văn bản (🔒 mở theo lịch)
@@ -69,7 +70,7 @@ docflow-data-platform/
 │   └── updates/              # Phiên bản sửa đổi của tài liệu (kiểm thử Versioning)
 ├── tests/gates/              # Gate test do mentor đặt ra (CI chạy trên mọi PR, không được sửa để lách)
 ├── scripts/                  # Script kiểm tra dùng chung cho pre-commit và CI
-└── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập
+└── docs/                     # Ghi chép thiết kế, sơ đồ ERD, nhật ký học tập, git cheatsheet
 ```
 
-Hãy bắt đầu Sprint 1 tại thư mục [`tasks/week_01/`](tasks/week_01/) nhé! Chúc bạn có trải nghiệm học tập thú vị.
+Hãy bắt đầu Sprint 1 tại thư mục [`tasks/week_01/`](tasks/week_01/) theo thứ tự Task 0.1 → 0.0 → 0.2 nhé! Chúc bạn có trải nghiệm học tập thú vị.
