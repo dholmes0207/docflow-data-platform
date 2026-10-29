@@ -36,6 +36,7 @@ Sau khi hoàn thành task này, bạn có thể tự tin xác nhận:
 - *MinIO có 2 cổng mặc định: cổng API (thường là 9000) và cổng Web Console (thường là 9001). Cổng nào sẽ dành cho code Python sau này gọi để upload/download file, và cổng nào dành cho con người mở trình duyệt xem trực quan?*
 - *Nếu trong file compose bạn không định nghĩa mục `volumes:` cho PostgreSQL, điều gì sẽ xảy ra khi bạn gõ `docker compose down` rồi khởi động lại?*
 - *Hai container trong cùng một file `docker-compose.yml` có thể giao tiếp với nhau bằng tên dịch vụ (service name) thay vì dùng địa chỉ IP không? Cơ chế đó gọi là gì?*
+- *Bạn ngồi Wi-Fi trường, Postgres mở cổng `5432` và vẫn dùng mật khẩu mẫu trong `.env.example`. Một người lạ cùng mạng có kết nối được vào database của bạn không? Ghi cổng thế nào để chặn điều đó?*
 
 ---
 
@@ -52,7 +53,7 @@ Một file compose chuẩn thường bao gồm các khối chính:
   - **`postgres`:**
     - Nên chọn image có sẵn extension vector, ví dụ: `pgvector/pgvector:pg16` thay vì image Postgres gốc.
     - Cần khai báo các biến môi trường: user, password, tên database mặc định.
-    - Chuyển tiếp cổng (thường là `"5432:5432"`).
+    - Chuyển tiếp cổng (thường là `"5432:5432"`). Mặc định Docker mở cổng cho **mọi** máy trong cùng mạng (ví dụ Wi-Fi trường) kết nối vào. Tìm hiểu cách chỉ mở cho chính máy bạn (từ khóa: `docker compose ports bind 127.0.0.1`), file mẫu đã làm như vậy.
     - Ánh xạ thư mục dữ liệu nội bộ của Postgres (`/var/lib/postgresql/data`) vào một Docker Volume để không bị mất dữ liệu.
   - **`minio`:**
     - Sử dụng image chính thức từ MinIO, nên **ghim cố định tag phiên bản** (như file mẫu `minio/minio:RELEASE.2024-05-10T01-41-38Z`) thay vì dùng `latest`. Các bản MinIO Community phát hành sau đó đã lược bớt nhiều chức năng quản trị trên Web Console, nên dùng bản mới có thể không thao tác được như hướng dẫn.
