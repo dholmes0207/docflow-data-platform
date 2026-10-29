@@ -79,6 +79,18 @@ def swap_roadmap_line(old: str, new: str) -> None:
     ROADMAP.write_text(text.replace(old, new), encoding="utf-8")
 
 
+def check_roadmap_lines(lines: list[str]) -> None:
+    """Dừng TRƯỚC khi mã hóa / giải mã / xóa file nào nếu roadmap không có đúng 1 dòng cho mỗi task."""
+    text = ROADMAP.read_text(encoding="utf-8")
+    missing = [line for line in lines if text.count(line) != 1]
+    if missing:
+        sys.exit(
+            "Chưa làm gì: roadmap/overview.md không có đúng 1 dòng cho:\n"
+            + "\n".join(f"  {line}" for line in missing)
+            + "\nSửa title trong tasks/release_schedule.toml hoặc dòng trong roadmap cho khớp rồi chạy lại."
+        )
+
+
 def run_age(args: list[str]) -> None:
     result = subprocess.run(["age", *args], capture_output=True, text=True)
     if result.returncode != 0:
@@ -91,7 +103,9 @@ def lock(tasks: list[Task]) -> None:
     for task in tasks:
         if task.is_locked:
             print(f"Bỏ qua Task {task.id}: đã khóa.")
-            continue
+    pending = [t for t in tasks if not t.is_locked]
+    check_roadmap_lines([t.released_line for t in pending])
+    for task in pending:
         task.locked.parent.mkdir(parents=True, exist_ok=True)
         run_age(["--encrypt", "--armor", "-R", str(RECIPIENTS), "-o", str(task.locked), str(task.plain)])
         task.plain.unlink()
@@ -104,6 +118,7 @@ def release(tasks: list[Task]) -> list[Task]:
     if not pending:
         print("Không có task nào cần mở.")
         return []
+    check_roadmap_lines([t.locked_line for t in pending])
     key = os.environ.get("TASK_UNLOCK_KEY", "").strip()
     if not key:
         sys.exit("Thiếu biến môi trường TASK_UNLOCK_KEY (khóa bí mật AGE-SECRET-KEY-...).")

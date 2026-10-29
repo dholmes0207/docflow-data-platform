@@ -7,6 +7,7 @@ Nếu một test đỏ, đọc thông báo lỗi: nó nói rõ file nào sai và
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import re
 import subprocess
 import sys
@@ -19,6 +20,10 @@ TASK_FILES = sorted((ROOT / "tasks").glob("week_*/task_*.md"))
 OVERVIEW = ROOT / "roadmap" / "overview.md"
 TRACKER = ROOT / "roadmap" / "weekly_tracker.md"
 VALID_STATUSES = {"Chưa bắt đầu", "Đang thực hiện", "Sẵn sàng Review", "Hoàn thành"}
+
+_spec = importlib.util.spec_from_file_location("check_forbidden_files", ROOT / "scripts" / "check_forbidden_files.py")
+forbidden = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(forbidden)
 
 
 def _task_id(task_file: Path) -> str:
@@ -49,6 +54,35 @@ def test_no_forbidden_files_tracked() -> None:
         text=True,
     )
     assert result.returncode == 0, f"Có file bị cấm trong repo:\n{result.stderr}"
+
+
+@pytest.mark.parametrize(
+    ("path", "blocked"),
+    [
+        (".env", True),
+        ("infra/.env", True),
+        ("infra/.env.local", True),
+        ("infra/.env.production", True),
+        ("infra/.env.example", False),
+        ("bao_cao.pdf", True),
+        ("src/docflow/data.zip", True),
+        ("sample_data/tenant_tech/hop_dong.docx", True),
+        ("docs/erd.pdf", False),
+        ("docs/slides/demo.PPTX", False),
+        ("src/docflow/config.py", False),
+    ],
+)
+def test_forbidden_file_rules(path: str, blocked: bool) -> None:
+    assert bool(forbidden.violations(path)) == blocked, f"{path}: mong đợi {'bị chặn' if blocked else 'được phép'}"
+
+
+def test_forbidden_file_size_limit(tmp_path: Path) -> None:
+    big = tmp_path / "corpus.txt"
+    big.write_bytes(b"x" * (forbidden.MAX_BYTES + 1))
+    small = tmp_path / "ok.txt"
+    small.write_bytes(b"x" * forbidden.MAX_BYTES)
+    assert forbidden.violations(str(big)), "file lớn hơn 1 MB phải bị chặn"
+    assert not forbidden.violations(str(small)), "file đúng 1 MB vẫn được phép"
 
 
 @pytest.mark.parametrize("task_file", TASK_FILES, ids=lambda p: p.name)
@@ -86,11 +120,21 @@ def test_tracker_rows_are_unique_and_statuses_valid() -> None:
         )
 
 
+def _repo_markdown_files() -> list[Path]:
+    """File .md của repo: đã commit hoặc mới tạo, bỏ qua mọi thứ .gitignore loại (.venv, cache...)."""
+    out = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--deduplicate", "*.md"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return [ROOT / line for line in out.stdout.splitlines() if (ROOT / line).is_file()]
+
+
 def test_relative_markdown_links_resolve() -> None:
     broken = []
-    for md in ROOT.rglob("*.md"):
-        if ".git" in md.parts:
-            continue
+    for md in _repo_markdown_files():
         for target in re.findall(r"\]\(([^)#\s]+)", md.read_text(encoding="utf-8")):
             if target.startswith(("http://", "https://", "mailto:")):
                 continue

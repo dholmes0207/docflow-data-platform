@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Chưa đặt POSTGRES_PASSWORD - hãy copy infra/.env.example thành infra/.env}
       POSTGRES_DB: ${POSTGRES_DB:-docflow_db}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432" # chỉ máy bạn kết nối được, máy khác cùng Wi-Fi thì không
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -29,8 +29,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Chưa đặt MINIO_ROOT_PASSWORD - hãy copy infra/.env.example thành infra/.env}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     volumes:
       - minio_data:/data
     networks:

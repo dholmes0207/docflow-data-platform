@@ -8,6 +8,9 @@ Mỗi task trong lịch phải ở đúng 1 trong 2 trạng thái:
 from __future__ import annotations
 
 import importlib.util
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -61,3 +64,37 @@ def test_no_secret_key_committed() -> None:
             assert "AGE-SECRET-KEY-" not in path.read_text(encoding="utf-8", errors="ignore"), (
                 f"{path.relative_to(ROOT)} chứa khóa BÍ MẬT. Khóa bí mật chỉ được đặt trong GitHub secret."
             )
+
+
+@pytest.mark.parametrize("command", ["lock", "release"])
+def test_mismatched_roadmap_title_changes_nothing(tmp_path: Path, command: str) -> None:
+    """Title trong lịch lệch với roadmap: script phải dừng trước khi mã hóa, giải mã hay xóa file nào."""
+    (tmp_path / "scripts").mkdir()
+    shutil.copy(ROOT / "scripts" / "task_release.py", tmp_path / "scripts")
+    (tmp_path / "roadmap").mkdir()
+    (tmp_path / "roadmap" / "overview.md").write_text("- [Task 9.9: Tên trong roadmap](../tasks/week_99/t.md)\n")
+    (tmp_path / "tasks" / "_locked" / "week_99").mkdir(parents=True)
+    (tmp_path / "tasks" / "_locked" / "recipients.txt").write_text("age1khoacongkhaigia\n")
+    (tmp_path / "tasks" / "release_schedule.toml").write_text(
+        "[[sprint]]\nnumber = 99\nrelease = 2027-01-04\n"
+        'tasks = [{ id = "9.9", path = "tasks/week_99/t.md", title = "Tên trong lịch" }]\n'
+    )
+    if command == "lock":
+        (tmp_path / "tasks" / "week_99").mkdir()
+        draft = tmp_path / "tasks" / "week_99" / "t.md"
+        draft.write_text("# Task 9.9: bản nháp\n")
+    else:
+        draft = tmp_path / "tasks" / "_locked" / "week_99" / "t.md.age"
+        draft.write_text("-----BEGIN AGE ENCRYPTED FILE-----\n")
+    before = draft.read_text()
+
+    result = subprocess.run(
+        [sys.executable, str(tmp_path / "scripts" / "task_release.py"), command, "--sprint", "99"],
+        capture_output=True,
+        text=True,
+        env={**os.environ, "TASK_UNLOCK_KEY": "AGE-SECRET-KEY-GIA"},
+    )
+
+    assert result.returncode != 0
+    assert "Chưa làm gì" in result.stderr, result.stderr
+    assert draft.exists() and draft.read_text() == before, "file đề bài bị động vào dù roadmap không khớp"
